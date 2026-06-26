@@ -15,13 +15,6 @@ $loggedInAdminId = (int) \Session::get('user_id');
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div class="flex items-center gap-4">
-                <a href="javascript:history.back()"
-                   class="p-2 rounded-xl bg-surface-700 hover:bg-surface-600 text-gray-400 hover:text-white transition-all duration-200"
-                   aria-label="Go back">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                    </svg>
-                </a>
                 <div>
                     <h1 class="text-2xl font-bold text-white">System Overview</h1>
                     <p class="text-gray-400 text-sm mt-0.5">Real-time metrics and administration controls.</p>
@@ -39,9 +32,9 @@ $loggedInAdminId = (int) \Session::get('user_id');
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <!-- Card 1: Total Users -->
-            <div class="glass-card p-5 hover:border-brand-600/30 transition-all duration-300">
-                <div class="flex items-center justify-between mb-3">
+            <!-- Card 1: Total Users (Interactive) -->
+            <a href="/admin/users" class="glass-card p-5 hover:border-brand-500 hover:shadow-glow hover:-translate-y-0.5 transition-all duration-300 block cursor-pointer">
+                <div class="flex items-center justify-between mb-5">
                     <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Users</span>
                     <div class="w-8 h-8 rounded-lg bg-brand-500/10 flex items-center justify-center text-brand-400">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,46 +43,48 @@ $loggedInAdminId = (int) \Session::get('user_id');
                     </div>
                 </div>
                 <p class="text-3xl font-bold text-white"><?= number_format($stats['total_users']) ?></p>
-            </div>
+            </a>
 
-            <!-- Card 2: Total Subscriptions -->
-            <div class="glass-card p-5 hover:border-brand-600/30 transition-all duration-300">
+            <!-- Card 2: Digital Clock -->
+            <div class="glass-card p-5 transition-all duration-300">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Subscriptions</span>
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">System Time</span>
                     <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                 </div>
-                <p class="text-3xl font-bold text-white"><?= number_format($stats['total_subscriptions']) ?></p>
+                <div class="flex flex-col">
+                    <p id="digital-clock" class="text-3xl font-bold text-white font-mono">--:--:--</p>
+                    <p id="digital-date" class="text-xs text-gray-400 mt-0.5">Loading date...</p>
+                </div>
             </div>
 
-            <!-- Card 3: Active Subscriptions -->
-            <div class="glass-card p-5 hover:border-brand-600/30 transition-all duration-300">
+            <!-- Card 3: Trigger Email Worker -->
+            <div class="glass-card p-5 transition-all duration-300 sm:col-span-2">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Active Alerts</span>
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Alerts Dispatcher</span>
                     <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                     </div>
                 </div>
-                <p class="text-3xl font-bold text-white"><?= number_format($stats['active_subscriptions']) ?></p>
-            </div>
-
-            <!-- Card 4: Platform Monthly Spend -->
-            <div class="glass-card p-5 hover:border-brand-600/30 transition-all duration-300">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Platform Spend</span>
-                    <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
-                        </svg>
+                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    <div>
+                        <p class="text-sm font-medium text-white">Trigger Email Worker</p>
+                        <p class="text-xs text-gray-400">Executes background script to dispatch pending renewal notifications.</p>
                     </div>
+                    <button id="trigger-worker-btn" class="btn-primary flex items-center justify-center gap-2 whitespace-nowrap self-start sm:self-auto min-w-[140px]">
+                        <span id="btn-text">Run Dispatcher</span>
+                        <svg id="btn-spinner" class="w-4 h-4 animate-spin hidden" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
                 </div>
-                <p class="text-3xl font-bold text-white">₱<?= number_format($stats['global_monthly_spend'], 2) ?></p>
+                <div id="worker-console" class="mt-4 hidden p-3 rounded bg-black/40 border border-white/5 text-xs text-gray-300 font-mono overflow-y-auto max-h-40 whitespace-pre-wrap"></div>
             </div>
         </div>
 
@@ -168,5 +163,69 @@ $loggedInAdminId = (int) \Session::get('user_id');
 
     </main>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Digital Clock
+    const clockEl = document.getElementById('digital-clock');
+    const dateEl = document.getElementById('digital-date');
+    
+    function updateClock() {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour12: false });
+        const dateStr = now.toLocaleDateString([], { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+        
+        if (clockEl) clockEl.textContent = timeStr;
+        if (dateEl) dateEl.textContent = dateStr;
+    }
+    
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // 2. Trigger Email Worker Action Button
+    const triggerBtn = document.getElementById('trigger-worker-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+    const consoleEl = document.getElementById('worker-console');
+
+    if (triggerBtn) {
+        triggerBtn.addEventListener('click', async () => {
+            triggerBtn.disabled = true;
+            btnText.textContent = 'Executing...';
+            btnSpinner.classList.remove('hidden');
+            consoleEl.classList.add('hidden');
+            consoleEl.textContent = '';
+            consoleEl.className = "mt-4 p-3 rounded bg-black/40 border border-white/5 text-xs text-gray-300 font-mono overflow-y-auto max-h-40 whitespace-pre-wrap";
+
+            try {
+                const response = await fetch('/admin/trigger-worker', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                const result = await response.json();
+
+                consoleEl.classList.remove('hidden');
+                if (result.success) {
+                    consoleEl.classList.add('border-emerald-500/30', 'text-emerald-400');
+                    consoleEl.textContent = `[SUCCESS] ${result.message}\n\n${result.output}`;
+                } else {
+                    consoleEl.classList.add('border-red-500/30', 'text-red-400');
+                    consoleEl.textContent = `[ERROR] ${result.message}\n\n${result.output}`;
+                }
+            } catch (err) {
+                consoleEl.classList.remove('hidden');
+                consoleEl.classList.add('border-red-500/30', 'text-red-400');
+                consoleEl.textContent = `[CONNECTION ERROR] Failed to contact the backend server.\n${err.message}`;
+            } finally {
+                triggerBtn.disabled = false;
+                btnText.textContent = 'Run Dispatcher';
+                btnSpinner.classList.add('hidden');
+            }
+        });
+    }
+});
+</script>
 
 <?php require_once __DIR__ . '/../layout/footer.php'; ?>

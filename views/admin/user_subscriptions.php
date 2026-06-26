@@ -68,7 +68,7 @@ require_once __DIR__ . '/../layout/navbar.php';
                 'cancelled' => ['badge' => 'bg-red-500/15 text-red-400 border-red-500/30',         'dot' => 'bg-red-400'],
             ];
             $sc        = $statusClasses[$sub['status']] ?? $statusClasses['active'];
-            $daysLeft  = (int) ceil((strtotime($sub['renewal_date']) - time()) / 86400);
+            $daysLeft  = (int) ceil((strtotime($sub['next_renewal_date']) - time()) / 86400);
             $isUrgent  = $daysLeft <= 3 && $sub['status'] === 'active';
         ?>
         <div class="glass-card p-5 hover:border-brand-600/30 transition-all duration-300">
@@ -96,7 +96,7 @@ require_once __DIR__ . '/../layout/navbar.php';
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <p class="text-xs text-gray-500 mb-0.5">Next Renewal</p>
-                    <p class="text-sm font-medium text-white"><?= date('M j, Y', strtotime($sub['renewal_date'])) ?></p>
+                    <p class="text-sm font-medium text-white"><?= date('M j, Y', strtotime($sub['next_renewal_date'])) ?></p>
                 </div>
                 <span class="text-xs font-semibold px-2.5 py-1 rounded-full <?= $isUrgent ? 'bg-red-500/15 text-red-400 border border-red-500/30 animate-pulse' : 'bg-surface-600 text-gray-400' ?>">
                     <?= $daysLeft < 0 ? 'Overdue' : ($daysLeft === 0 ? 'Today' : "In {$daysLeft}d") ?>

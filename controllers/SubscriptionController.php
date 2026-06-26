@@ -1,8 +1,7 @@
 <?php
 /**
  * SubscriptionController
- * Handles all CRUD operations for subscriptions.
- * Delete is restricted to admin role only.
+ * Handles CRUD operations for user subscriptions.
  */
 
 require_once dirname(__DIR__) . '/models/Subscription.php';
@@ -30,19 +29,6 @@ class SubscriptionController
     }
 
     // ------------------------------------------------------------------
-    // Guard: admin only
-    // ------------------------------------------------------------------
-    private function requireAdmin(): void
-    {
-        $this->requireAuth();
-        if (!Session::isAdmin()) {
-            Session::flash('error', 'Access denied. Admin privileges required.');
-            header("Location: {$this->baseUrl}/subscriptions");
-            exit;
-        }
-    }
-
-    // ------------------------------------------------------------------
     // List All
     // ------------------------------------------------------------------
     public function index(): void
@@ -55,6 +41,28 @@ class SubscriptionController
         $flash_error   = Session::getFlash('error');
 
         require_once dirname(__DIR__) . '/views/subscriptions/index.php';
+    }
+
+    // ------------------------------------------------------------------
+    // Show Details
+    // ------------------------------------------------------------------
+    public function show(int $id): void
+    {
+        $this->requireAuth();
+        $userId = (int) Session::get('user_id');
+
+        $subscription = $this->subModel->getById($id, $userId);
+
+        if (!$subscription) {
+            Session::flash('error', 'Subscription not found or access denied.');
+            header("Location: {$this->baseUrl}/subscriptions");
+            exit;
+        }
+
+        $flash_success = Session::getFlash('success');
+        $flash_error   = Session::getFlash('error');
+
+        require_once dirname(__DIR__) . '/views/subscriptions/show.php';
     }
 
     // ------------------------------------------------------------------
@@ -97,7 +105,7 @@ class SubscriptionController
             'cost'           => (float) $_POST['cost'],
             'billing_cycle'  => $_POST['billing_cycle'],
             'payment_method' => $this->sanitize($_POST['payment_method'] ?? 'Credit Card'),
-            'renewal_date'   => $_POST['renewal_date'],
+            'start_date'     => $_POST['start_date'],
             'notes'          => $this->sanitize($_POST['notes'] ?? ''),
             'status'         => $_POST['status'] ?? 'active',
         ];
@@ -165,7 +173,7 @@ class SubscriptionController
             'cost'           => (float) $_POST['cost'],
             'billing_cycle'  => $_POST['billing_cycle'],
             'payment_method' => $this->sanitize($_POST['payment_method'] ?? 'Credit Card'),
-            'renewal_date'   => $_POST['renewal_date'],
+            'start_date'     => $_POST['start_date'],
             'notes'          => $this->sanitize($_POST['notes'] ?? ''),
             'status'         => $_POST['status'] ?? 'active',
         ];
@@ -217,8 +225,6 @@ class SubscriptionController
         exit;
     }
 
-
-
     // ------------------------------------------------------------------
     // Helpers
     // ------------------------------------------------------------------
@@ -245,9 +251,9 @@ class SubscriptionController
             $errors[] = 'Invalid billing cycle.';
         }
 
-        $date = $post['renewal_date'] ?? '';
+        $date = $post['start_date'] ?? '';
         if (empty($date) || !strtotime($date)) {
-            $errors[] = 'A valid renewal date is required.';
+            $errors[] = 'A valid subscription start date is required.';
         }
 
         $validStatuses = ['active', 'paused', 'cancelled'];

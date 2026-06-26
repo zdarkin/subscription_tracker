@@ -1,131 +1,113 @@
-# Recurring Subscription Tracking System
+# SubsTrack - Recurring Subscription Tracking System
 
-A PHP/MySQL web application for tracking recurring software subscriptions with automated email renewal alerts.
-
----
-
-## Tech Stack
-
-| Layer    | Technology                                 |
-| -------- | ------------------------------------------ |
-| Frontend | Vanilla HTML, Tailwind CSS CDN, Vanilla JS |
-| Backend  | PHP 8.x (PDO, no framework)                |
-| Database | MySQL (Laragon)                            |
-| Email    | PHPMailer + Gmail SMTP                     |
-| Server   | Apache (Laragon) with mod_rewrite          |
+A complete, production-ready PHP/MySQL web application for tracking recurring software subscriptions, managing spending, and receiving automated email renewal alerts.
 
 ---
 
-## Project Structure
+## 🚀 Features
 
-```
-/
-├── config/             App config & .env parser
-├── controllers/        MVC Controllers + Session helper
-├── models/             PDO-based data models
-├── views/              PHP template views
-│   ├── auth/           Login & Register pages
-│   ├── layout/         Header, Footer, Navbar partials
-│   └── subscriptions/  CRUD views + form partial
-├── public/             Web root (index.php front controller)
-│   ├── css/style.css
-│   └── js/app.js
-├── scripts/            CLI email worker (cron/scheduler)
-├── sql/schema.sql      Database schema
-├── vendor/             PHPMailer (Composer)
-├── .env                Environment config (NOT committed)
-└── composer.json
-```
+- **Dashboard & Analytics**: Visualize monthly/annual spend and category breakdowns with interactive charts.
+- **Automated Email Alerts**: Daily background worker to notify users of upcoming renewals (e.g., 3 days and 1 day before).
+- **Subscription Management**: Full CRUD capabilities for tracking services, costs, billing cycles, and status (Active, Paused, Cancelled).
+- **Role-Based Access Control (RBAC)**: Distinct Admin and User roles with an administrative dashboard for user management.
+- **Modern UI**: Fully responsive, dark-mode-first glassmorphism design using Tailwind CSS.
+- **Robust Security**: Protection against XSS (strict output escaping), SQL Injection (PDO prepared statements), and robust session security (HttpOnly, SameSite, and strict timeouts).
 
 ---
 
-## Setup Instructions
+## 🛠 Tech Stack
 
-### 1. Database
+| Layer | Technology |
+| --- | --- |
+| **Frontend** | HTML5, Tailwind CSS, Vanilla JavaScript, Chart.js (via Canvas) |
+| **Backend** | PHP 8.1+ (Vanilla MVC-lite structure, no heavy frameworks) |
+| **Database** | MySQL 8.0+ / MariaDB |
+| **Email Services** | PHPMailer (supports Mailpit for local dev, Gmail/SMTP for production) |
 
-1. Open **phpMyAdmin** (via Laragon → Menu → phpMyAdmin)
-2. Import `sql/schema.sql`
-3. A database `subscription_tracker` will be created with all tables and a default admin account
+---
 
-### 2. Configure Environment
+## 📋 Prerequisites
 
-Edit `.env` in the project root:
+To run this application, ensure your environment has:
+- **PHP 8.1 or higher**
+- **MySQL 8.0+** or **MariaDB 10.4+**
+- **Composer** (for installing PHPMailer)
+- A local server environment like **Laragon**, **XAMPP**, or **MAMP** (Laragon is highly recommended).
+- **Apache** with `mod_rewrite` enabled.
 
-```env
-DB_HOST=127.0.0.1
-DB_NAME=subscription_tracker
-DB_USER=root
-DB_PASS=
+---
 
-MAIL_USERNAME=your_gmail@gmail.com
-MAIL_PASSWORD=your_16_char_app_password
-```
+## ⚙️ Setup & Installation
 
-**Gmail App Password setup:**
+### 1. Clone the Repository
+Clone the repository into your web server's document root (e.g., `C:\laragon\www\subscription_tracker`).
 
-1. Go to [myaccount.google.com/security](https://myaccount.google.com/security)
-2. Enable 2-Step Verification
-3. Search for "App passwords" and generate one for "Mail"
-4. Use the 16-character code as `MAIL_PASSWORD`
+### 2. Database Configuration
+1. Open your database manager (e.g., phpMyAdmin, HeidiSQL, or TablePlus).
+2. Create a new database named `subscription_tracker` (or let the schema file do it).
+3. Import the schema file located at `sql/schema.sql`.
+4. *(Optional)* Import `sql/test_data.sql` to populate the database with sample users and subscriptions.
+   > **Note:** The default admin account (if using test data) is `john.admin@example.com` / `password123`.
 
-### 3. Install Dependencies
+### 3. Environment Configuration
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+2. Edit `.env` to match your local environment setup:
+   - Configure your `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASS`.
+   - By default, the application is configured to use **Mailpit** (port 1025) for local email testing. If deploying to production, comment out the Mailpit section and provide your live SMTP credentials (e.g., Gmail with an App Password).
 
-From the project root, run:
-
+### 4. Install Dependencies
+Run Composer to install PHPMailer:
 ```bash
 composer install
 ```
 
-### 4. Configure Laragon Virtual Host
-
-Set the document root of your virtual host to `<project_root>/public/`.
-
-Or if using default Laragon setup, place the project in:
-`C:\laragon\www\subscription-tracker\`
-
-Then access at: `http://localhost/subscription-tracker/public/`
-
-Update `APP_URL` in `.env` and the `RewriteBase` in `public/.htaccess` accordingly.
-
-### 5. Enable mod_rewrite
-
-In Laragon: Menu → Apache → httpd.conf → ensure `mod_rewrite` is enabled and `AllowOverride All` is set for the www directory.
+### 5. Web Server Configuration
+Point your web server's document root to the `public/` directory of the application, or access it via your local subfolder.
+- Ensure `AllowOverride All` is set in your Apache configuration so the `public/.htaccess` file is read correctly to route all traffic through `public/index.php`.
 
 ---
 
-## Email Worker Setup (Windows Task Scheduler)
+## 📧 Email Worker Setup (Cron Job / Task Scheduler)
 
-1. Open **Task Scheduler** → Create Basic Task
-2. Name: `SubsTrack Email Alerts`
-3. Trigger: Daily at **7:00 AM**
-4. Action: **Start a Program**
-   - Program: `C:\laragon\bin\php\php8.x\php.exe`
-   - Arguments: `"C:\laragon\www\subscription-tracker\scripts\email_worker.php"`
-5. Save
+To send automated renewal alerts, the `scripts/email_worker.php` file must be executed daily.
 
-**Manual test run:**
+**For Linux (Cron):**
+```bash
+0 7 * * * /usr/bin/php /path/to/subscription_tracker/scripts/email_worker.php >> /path/to/subscription_tracker/logs/email_cron.log 2>&1
+```
 
+**For Windows (Task Scheduler):**
+1. Open Task Scheduler and click **Create Basic Task**.
+2. Name it `SubsTrack Email Alerts`.
+3. Set the trigger to **Daily** at **7:00 AM**.
+4. Set the action to **Start a Program**.
+   - Program/script: `C:\laragon\bin\php\php8.1\php.exe` (Path to your PHP executable)
+   - Add arguments: `"C:\laragon\www\subscription_tracker\scripts\email_worker.php"`
+
+You can run this script manually in your terminal to test email delivery:
+```bash
 php scripts/email_worker.php
+```
 
 ---
 
-## Security Features
-
-- ✅ Passwords hashed with `bcrypt` (cost 12) via `password_hash()`
-- ✅ PDO prepared statements — SQL injection prevention
-- ✅ `htmlspecialchars()` output escaping — XSS prevention
-- ✅ Session ID regenerated on login — session fixation prevention
-- ✅ 15-minute session inactivity timeout
-- ✅ `HttpOnly + SameSite=Lax` session cookies
-- ✅ Admin-only delete operations (RBAC)
-- ✅ Credentials in `.env` (git-ignored)
-- ✅ Email log table prevents duplicate alerts
+## 🛡️ Security Details
+The codebase has been thoroughly audited for deployment readiness:
+- **XSS Prevention**: All user-generated content is escaped using `htmlspecialchars(..., ENT_QUOTES)`.
+- **SQLi Prevention**: 100% reliance on parameterized PDO queries; no string interpolation in SQL statements.
+- **Session Security**: Enforces `SameSite=Lax` and `HttpOnly` flags on session cookies. Includes automatic inactivity timeouts and session ID regeneration.
+- **Credential Safety**: `.env` files and IDE directories are strictly ignored in `.gitignore`. Hardcoded credentials have been completely removed.
 
 ---
 
-## User Roles
+## 👨‍💻 Usage
+1. Register a new user account or log in with an existing one.
+2. Navigate to **Add Subscription** to track a new recurring cost.
+3. The **Dashboard** will automatically update your monthly/annual spend projections and upcoming renewals.
+4. Admins can navigate to the **Admin Dashboard** via the footer to manage users and monitor global system metrics.
 
-| Role  | Capabilities                                        |
-| ----- | --------------------------------------------------- |
-| user  | Register, login, create/read/update/delete own subs |
-| admin | All of the above + user management tools            |
+---
+*Developed with ❤️ for better financial tracking.*

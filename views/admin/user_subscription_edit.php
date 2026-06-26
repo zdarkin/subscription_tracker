@@ -113,12 +113,12 @@ $statuses       = ['active', 'paused', 'cancelled'];
                     </select>
                 </div>
 
-                <!-- Renewal Date -->
+                <!-- Start Date -->
                 <div class="form-group">
-                    <label for="renewal_date" class="form-label">Next Renewal Date <span class="text-red-400">*</span></label>
-                    <input type="date" id="renewal_date" name="renewal_date" class="form-input"
-                           required min="<?= date('Y-m-d') ?>"
-                           value="<?= htmlspecialchars($old['renewal_date'] ?? '', ENT_QUOTES) ?>" />
+                    <label for="start_date" class="form-label">Subscription Start Date <span class="text-red-400">*</span></label>
+                    <input type="date" id="start_date" name="start_date" class="form-input"
+                           required
+                           value="<?= htmlspecialchars($old['start_date'] ?? $old['renewal_date'] ?? '', ENT_QUOTES) ?>" />
                 </div>
 
                 <!-- Status -->

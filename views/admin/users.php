@@ -131,7 +131,7 @@ $loggedInAdminId = (int) \Session::get('user_id');
                                     data-subs="<?= (int)$u['subscription_count'] ?>">
                                     <td class="py-3.5 pr-4 flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full bg-gradient-brand flex items-center justify-center text-xs font-bold text-white">
-                                            <?= strtoupper(substr($u['username'], 0, 1)) ?>
+                                            <?= htmlspecialchars(strtoupper(substr($u['username'], 0, 1)), ENT_QUOTES) ?>
                                         </div>
                                         <div class="min-w-0">
                                             <p class="font-medium text-white truncate"><?= htmlspecialchars($u['username'], ENT_QUOTES) ?></p>
@@ -147,7 +147,7 @@ $loggedInAdminId = (int) \Session::get('user_id');
                                         <?= date('M j, Y g:i A', strtotime($u['created_at'])) ?>
                                     </td>
                                     <td class="py-3.5 px-4 text-center text-white font-medium">
-                                        <?= $u['subscription_count'] ?>
+                                        <?= (int)$u['subscription_count'] ?>
                                     </td>
                                     <td class="py-3.5 pl-4 text-right">
                                         <div class="flex items-center justify-end gap-1.5">

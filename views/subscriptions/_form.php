@@ -77,12 +77,12 @@ $statuses       = ['active', 'paused', 'cancelled'];
             </select>
         </div>
 
-        <!-- Renewal Date -->
+        <!-- Start Date -->
         <div class="form-group">
-            <label for="renewal_date" class="form-label">Next Renewal Date <span class="text-red-400">*</span></label>
-            <input type="date" id="renewal_date" name="renewal_date" class="form-input"
-                   required min="<?= date('Y-m-d') ?>"
-                   value="<?= htmlspecialchars($old['renewal_date'] ?? '', ENT_QUOTES) ?>" />
+            <label for="start_date" class="form-label">Subscription Start Date <span class="text-red-400">*</span></label>
+            <input type="date" id="start_date" name="start_date" class="form-input"
+                   required
+                   value="<?= htmlspecialchars($old['start_date'] ?? $old['renewal_date'] ?? '', ENT_QUOTES) ?>" />
         </div>
 
         <!-- Status -->
@@ -108,7 +108,7 @@ $statuses       = ['active', 'paused', 'cancelled'];
 
     <!-- Monthly cost preview -->
     <div id="costPreview" class="mt-4 p-3 rounded-xl bg-brand-600/10 border border-brand-600/20 text-sm text-brand-300 hidden">
-        📊 Estimated monthly cost: <strong id="monthlyCostDisplay">₱0.00</strong>
+        Estimated monthly cost: <strong id="monthlyCostDisplay">₱0.00</strong>
     </div>
 
     <!-- Actions -->
