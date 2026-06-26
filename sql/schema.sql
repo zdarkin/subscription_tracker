@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS users (
     PRIMARY KEY (id),
     UNIQUE KEY uq_users_email    (email),
     UNIQUE KEY uq_users_username (username)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 
 -- ---------------------------------------------------------
 -- Table: subscriptions
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS subscriptions (
     cost            DECIMAL(10,2)       NOT NULL,
     billing_cycle   ENUM('monthly','quarterly','semi-annual','annual') NOT NULL DEFAULT 'monthly',
     payment_method  VARCHAR(80)         NOT NULL DEFAULT 'Credit Card',
-    renewal_date    DATE                NOT NULL,
+    start_date      DATE                NOT NULL,
     notes           TEXT                NULL,
     status          ENUM('active','paused','cancelled') NOT NULL DEFAULT 'active',
     created_at      TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -46,9 +46,10 @@ CREATE TABLE IF NOT EXISTS subscriptions (
         FOREIGN KEY (user_id) REFERENCES users (id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    INDEX idx_subscriptions_renewal (renewal_date),
-    INDEX idx_subscriptions_user    (user_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    INDEX idx_subscriptions_start  (start_date),
+    INDEX idx_subscriptions_user   (user_id),
+    INDEX idx_subscriptions_status (status)
+);
 
 -- ---------------------------------------------------------
 -- Table: email_logs  (tracks sent alerts, prevents duplicates)
@@ -71,4 +72,4 @@ CREATE TABLE IF NOT EXISTS email_logs (
         FOREIGN KEY (user_id) REFERENCES users (id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);

@@ -1,6 +1,6 @@
 -- =============================================================
 -- Recurring Subscription Tracking System
--- Sample / Test Data Seed Script
+-- Sample / Test Data Seed Script (Expanded)
 -- =============================================================
 
 USE subscription_tracker;
@@ -13,46 +13,125 @@ DELETE FROM users WHERE email LIKE '%@example.com';
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- 1. Insert Test Users
--- Passwords:
--- 'admin123'   -> $2y$12$dE1iUWUEl9QOPXsj4zdBBu7TbcaDvcJkdPfXnB9WFIDuUGwQwSf4C
--- 'password123' -> $2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy
-
+-- 1. Insert Test Users 
+-- PASSWORD for all users: password123
 INSERT INTO users (id, username, email, password, role, created_at) VALUES
 (1001, 'john_admin', 'john.admin@example.com', '$2y$12$dE1iUWUEl9QOPXsj4zdBBu7TbcaDvcJkdPfXnB9WFIDuUGwQwSf4C', 'admin', NOW()),
 (1002, 'alice_smith', 'alice@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
 (1003, 'bob_jones', 'bob@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
 (1004, 'charlie_brown', 'charlie@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1005, 'diana_prince', 'diana@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW());
+(1005, 'diana_prince', 'diana@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1006, 'james_smith', 'james.smith@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1007, 'mary_johnson', 'mary.johnson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1008, 'john_williams', 'john.williams@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1009, 'patricia_brown', 'patricia.brown@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1010, 'robert_jones', 'robert.jones@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1011, 'jennifer_garcia', 'jennifer.garcia@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1012, 'michael_miller', 'michael.miller@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1013, 'linda_davis', 'linda.davis@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1014, 'william_rodriguez', 'william.rodriguez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1015, 'elizabeth_martinez', 'elizabeth.martinez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1016, 'david_hernandez', 'david.hernandez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1017, 'barbara_lopez', 'barbara.lopez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1018, 'richard_gonzalez', 'richard.gonzalez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1019, 'susan_wilson', 'susan.wilson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1020, 'joseph_anderson', 'joseph.anderson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1021, 'jessica_thomas', 'jessica.thomas@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1022, 'thomas_taylor', 'thomas.taylor@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1023, 'sarah_moore', 'sarah.moore@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1024, 'charles_jackson', 'charles.jackson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1025, 'karen_martin', 'karen.martin@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW());
 
 -- 2. Insert Test Subscriptions
--- Includes active, paused, and cancelled services with varying billing cycles,
--- categories, and renewal dates relative to the current date.
-INSERT INTO subscriptions (user_id, service_name, category, cost, billing_cycle, payment_method, renewal_date, notes, status, created_at) VALUES
--- Subscriptions for john_admin (1001)
-(1001, 'Netflix Premium', 'Entertainment', 549.00, 'monthly', 'Credit Card', DATE_ADD(CURRENT_DATE, INTERVAL 2 DAY), 'Shared family account', 'active', NOW()),
-(1001, 'Spotify Duo', 'Entertainment', 149.00, 'monthly', 'GCash', DATE_ADD(CURRENT_DATE, INTERVAL 5 DAY), 'Duo plan with spouse', 'active', NOW()),
-(1001, 'AWS Hosting', 'Development', 1250.00, 'monthly', 'Credit Card', DATE_ADD(CURRENT_DATE, INTERVAL 12 DAY), 'Personal server hosting', 'paused', NOW()),
-(1001, 'ChatGPT Plus', 'Utilities', 1140.00, 'monthly', 'Paypal', DATE_ADD(CURRENT_DATE, INTERVAL 20 DAY), 'AI assistant tool', 'active', NOW()),
-
--- Subscriptions for alice_smith (1002)
-(1002, 'Amazon Prime Video', 'Entertainment', 150.00, 'monthly', 'Credit Card', DATE_ADD(CURRENT_DATE, INTERVAL 1 DAY), 'Included with delivery prime', 'active', NOW()),
-(1002, 'YouTube Premium', 'Entertainment', 239.00, 'monthly', 'Maya', DATE_ADD(CURRENT_DATE, INTERVAL 3 DAY), 'Family plan', 'active', NOW()),
-(1002, 'Github Copilot', 'Development', 570.00, 'monthly', 'Credit Card', DATE_ADD(CURRENT_DATE, INTERVAL 15 DAY), 'Coding assistant', 'active', NOW()),
-(1002, 'Adobe Creative Cloud', 'Work', 2900.00, 'monthly', 'Credit Card', DATE_ADD(CURRENT_DATE, INTERVAL 25 DAY), 'Photoshop and Premiere Pro tools', 'active', NOW()),
-(1002, 'Gym Membership', 'Other', 1800.00, 'monthly', 'Cash', DATE_ADD(CURRENT_DATE, INTERVAL 10 DAY), 'Local fitness gym fee', 'paused', NOW()),
-
--- Subscriptions for bob_jones (1003)
-(1003, 'Laracasts', 'Education', 850.00, 'monthly', 'PayPal', DATE_ADD(CURRENT_DATE, INTERVAL 4 DAY), 'PHP tutorials learning platform', 'active', NOW()),
-(1003, 'Dropbox Plus', 'Utilities', 6800.00, 'annual', 'Credit Card', DATE_ADD(CURRENT_DATE, INTERVAL 45 DAY), 'Cloud storage backup storage', 'active', NOW()),
-(1003, 'Medium Premium', 'Education', 285.00, 'monthly', 'Credit Card', DATE_ADD(CURRENT_DATE, INTERVAL 18 DAY), 'Tech articles publisher access', 'cancelled', NOW()),
-
--- Subscriptions for charlie_brown (1004)
-(1004, 'Spotify Premium', 'Entertainment', 129.00, 'monthly', 'GCash', DATE_ADD(CURRENT_DATE, INTERVAL 2 DAY), 'Solo music streaming', 'active', NOW()),
-(1004, 'Microsoft 365', 'Work', 3499.00, 'annual', 'Debit Card', DATE_ADD(CURRENT_DATE, INTERVAL 90 DAY), 'Word/Excel cloud suite', 'active', NOW()),
-(1004, 'Slack Pro', 'Work', 450.00, 'monthly', 'Credit Card', DATE_ADD(CURRENT_DATE, INTERVAL 8 DAY), 'Team chat collaboration tool', 'active', NOW()),
-
--- Subscriptions for diana_prince (1005)
-(1005, 'Apple One', 'Entertainment', 375.00, 'monthly', 'Credit Card', DATE_ADD(CURRENT_DATE, INTERVAL 1 DAY), 'iCloud + Music bundle', 'active', NOW()),
-(1005, 'Canva Pro', 'Work', 299.00, 'monthly', 'GCash', DATE_ADD(CURRENT_DATE, INTERVAL 14 DAY), 'Design software subscription', 'active', NOW()),
-(1005, 'Zoom Pro', 'Utilities', 850.00, 'monthly', 'Paypal', DATE_ADD(CURRENT_DATE, INTERVAL 28 DAY), 'Video conferences', 'paused', NOW());
+INSERT INTO subscriptions (user_id, service_name, category, cost, billing_cycle, payment_method, start_date, notes, status, created_at) VALUES
+(1001, 'Duolingo Plus', 'Education', 450, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 85 DAY), 'Language learning app', 'active', NOW()),
+(1001, 'Figma Pro', 'Productivity', 850, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 120 DAY), 'Design mockups editor', 'active', NOW()),
+(1001, 'Zoom Pro', 'Communication', 850, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 107 DAY), 'Video conferences', 'active', NOW()),
+(1001, 'Netflix Premium', 'Entertainment', 549, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 344 DAY), 'Shared family account', 'active', NOW()),
+(1002, 'YouTube Premium', 'Entertainment', 239, 'monthly', 'Maya', DATE_SUB(CURRENT_DATE, INTERVAL 121 DAY), 'Family plan', 'active', NOW()),
+(1002, 'Notion Plus', 'Productivity', 280, 'monthly', 'Maya', DATE_SUB(CURRENT_DATE, INTERVAL 49 DAY), 'Workspace organization', 'active', NOW()),
+(1002, 'Slack Pro', 'Communication', 450, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 257 DAY), 'Team chat collaboration tool', 'active', NOW()),
+(1002, 'Zoom Pro', 'Communication', 850, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 171 DAY), 'Video conferences', 'active', NOW()),
+(1002, 'Apple One', 'Entertainment', 375, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 312 DAY), 'iCloud + Music bundle', 'active', NOW()),
+(1003, 'Medium Premium', 'Education', 285, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 250 DAY), 'Tech articles publisher access', 'cancelled', NOW()),
+(1003, 'Notion Plus', 'Productivity', 280, 'monthly', 'Maya', DATE_SUB(CURRENT_DATE, INTERVAL 106 DAY), 'Workspace organization', 'active', NOW()),
+(1003, 'Laracasts', 'Education', 850, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 257 DAY), 'PHP tutorials learning platform', 'active', NOW()),
+(1004, 'Figma Pro', 'Productivity', 850, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 232 DAY), 'Design mockups editor', 'active', NOW()),
+(1004, 'Slack Pro', 'Communication', 450, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 394 DAY), 'Team chat collaboration tool', 'active', NOW()),
+(1004, 'Spotify Duo', 'Entertainment', 149, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 343 DAY), 'Duo plan with spouse', 'active', NOW()),
+(1005, 'Adobe Creative Cloud', 'Software', 2900, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 102 DAY), 'Photoshop and Premiere Pro tools', 'active', NOW()),
+(1005, 'Amazon Prime Video', 'Entertainment', 150, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 391 DAY), 'Included with delivery prime', 'active', NOW()),
+(1005, 'Canva Pro', 'Productivity', 299, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 352 DAY), 'Design software subscription', 'active', NOW()),
+(1006, 'Github Copilot', 'Software', 3420, 'semi-annual', 'Bank Transfer', DATE_SUB(CURRENT_DATE, INTERVAL 249 DAY), 'Coding assistant', 'active', NOW()),
+(1006, 'Laracasts', 'Education', 2550, 'quarterly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 220 DAY), 'PHP tutorials learning platform', 'paused', NOW()),
+(1006, '1Password', 'Security', 170, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 338 DAY), 'Password manager', 'cancelled', NOW()),
+(1006, 'Canva Pro', 'Productivity', 299, 'monthly', 'Maya', DATE_SUB(CURRENT_DATE, INTERVAL 277 DAY), 'Design software subscription', 'paused', NOW()),
+(1006, 'AWS Hosting', 'Cloud Storage', 3750, 'quarterly', 'Bank Transfer', DATE_SUB(CURRENT_DATE, INTERVAL 130 DAY), 'Personal server hosting', 'paused', NOW()),
+(1007, 'Apple One', 'Entertainment', 375, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 159 DAY), 'iCloud + Music bundle', 'paused', NOW()),
+(1007, 'YouTube Premium', 'Entertainment', 239, 'monthly', 'Maya', DATE_SUB(CURRENT_DATE, INTERVAL 154 DAY), 'Family plan', 'paused', NOW()),
+(1007, 'Zoom Pro', 'Communication', 850, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 59 DAY), 'Video conferences', 'paused', NOW()),
+(1008, 'Figma Pro', 'Productivity', 850, 'monthly', 'Maya', DATE_SUB(CURRENT_DATE, INTERVAL 149 DAY), 'Design mockups editor', 'paused', NOW()),
+(1008, 'YouTube Premium', 'Entertainment', 239, 'monthly', 'Maya', DATE_SUB(CURRENT_DATE, INTERVAL 348 DAY), 'Family plan', 'paused', NOW()),
+(1008, 'Github Copilot', 'Software', 570, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 31 DAY), 'Coding assistant', 'cancelled', NOW()),
+(1008, 'Zoom Pro', 'Communication', 850, 'monthly', 'Debit Card', DATE_SUB(CURRENT_DATE, INTERVAL 50 DAY), 'Video conferences', 'active', NOW()),
+(1008, 'AWS Hosting', 'Cloud Storage', 3750, 'quarterly', 'Debit Card', DATE_SUB(CURRENT_DATE, INTERVAL 228 DAY), 'Personal server hosting', 'paused', NOW()),
+(1009, 'Gym Membership', 'Health', 1800, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 185 DAY), 'Local fitness gym fee', 'active', NOW()),
+(1009, 'Zoom Pro', 'Communication', 850, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 313 DAY), 'Video conferences', 'active', NOW()),
+(1009, 'Canva Pro', 'Productivity', 2990, 'annual', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 168 DAY), 'Design software subscription', 'paused', NOW()),
+(1009, 'Spotify Premium', 'Entertainment', 129, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 68 DAY), 'Solo music streaming', 'cancelled', NOW()),
+(1010, 'Microsoft 365', 'Productivity', 3499, 'annual', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 95 DAY), 'Word/Excel cloud suite', 'cancelled', NOW()),
+(1010, 'Spotify Duo', 'Entertainment', 149, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 220 DAY), 'Duo plan with spouse', 'active', NOW()),
+(1010, 'Figma Pro', 'Productivity', 850, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 381 DAY), 'Design mockups editor', 'cancelled', NOW()),
+(1010, 'Github Copilot', 'Software', 570, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 37 DAY), 'Coding assistant', 'active', NOW()),
+(1011, 'NordVPN', 'Security', 299, 'monthly', 'Maya', DATE_SUB(CURRENT_DATE, INTERVAL 61 DAY), 'VPN security subscription', 'active', NOW()),
+(1011, '1Password', 'Security', 170, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 134 DAY), 'Password manager', 'active', NOW()),
+(1011, 'iCloud+ 200GB', 'Cloud Storage', 894, 'semi-annual', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 39 DAY), 'Cloud backup storage', 'active', NOW()),
+(1012, 'Laracasts', 'Education', 850, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 120 DAY), 'PHP tutorials learning platform', 'active', NOW()),
+(1012, 'Adobe Creative Cloud', 'Software', 2900, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 391 DAY), 'Photoshop and Premiere Pro tools', 'paused', NOW()),
+(1012, 'Netflix Premium', 'Entertainment', 549, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 154 DAY), 'Shared family account', 'paused', NOW()),
+(1013, 'Gym Membership', 'Health', 1800, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 276 DAY), 'Local fitness gym fee', 'paused', NOW()),
+(1013, 'AWS Hosting', 'Cloud Storage', 12500, 'annual', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 34 DAY), 'Personal server hosting', 'cancelled', NOW()),
+(1013, 'Notion Plus', 'Productivity', 1680, 'semi-annual', 'Maya', DATE_SUB(CURRENT_DATE, INTERVAL 39 DAY), 'Workspace organization', 'active', NOW()),
+(1013, 'YouTube Premium', 'Entertainment', 717, 'quarterly', 'Maya', DATE_SUB(CURRENT_DATE, INTERVAL 153 DAY), 'Family plan', 'active', NOW()),
+(1014, 'Amazon Prime Video', 'Entertainment', 1500, 'annual', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 315 DAY), 'Included with delivery prime', 'cancelled', NOW()),
+(1014, 'Adobe Creative Cloud', 'Software', 2900, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 34 DAY), 'Photoshop and Premiere Pro tools', 'cancelled', NOW()),
+(1014, '1Password', 'Security', 510, 'quarterly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 286 DAY), 'Password manager', 'active', NOW()),
+(1014, 'Github Copilot', 'Software', 570, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 352 DAY), 'Coding assistant', 'cancelled', NOW()),
+(1015, 'Laracasts', 'Education', 850, 'monthly', 'Bank Transfer', DATE_SUB(CURRENT_DATE, INTERVAL 135 DAY), 'PHP tutorials learning platform', 'paused', NOW()),
+(1015, 'Duolingo Plus', 'Education', 1350, 'quarterly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 194 DAY), 'Language learning app', 'paused', NOW()),
+(1015, 'Medium Premium', 'Education', 285, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 400 DAY), 'Tech articles publisher access', 'paused', NOW()),
+(1016, 'Netflix Premium', 'Entertainment', 549, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 258 DAY), 'Shared family account', 'active', NOW()),
+(1016, '1Password', 'Security', 170, 'monthly', 'Debit Card', DATE_SUB(CURRENT_DATE, INTERVAL 393 DAY), 'Password manager', 'active', NOW()),
+(1016, 'iCloud+ 200GB', 'Cloud Storage', 149, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 337 DAY), 'Cloud backup storage', 'cancelled', NOW()),
+(1017, 'iCloud+ 200GB', 'Cloud Storage', 149, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 157 DAY), 'Cloud backup storage', 'paused', NOW()),
+(1017, 'Canva Pro', 'Productivity', 1794, 'semi-annual', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 274 DAY), 'Design software subscription', 'active', NOW()),
+(1017, 'Microsoft 365', 'Productivity', 3499, 'annual', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 275 DAY), 'Word/Excel cloud suite', 'active', NOW()),
+(1017, 'Medium Premium', 'Education', 285, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 363 DAY), 'Tech articles publisher access', 'paused', NOW()),
+(1018, 'Microsoft 365', 'Productivity', 3499, 'annual', 'Debit Card', DATE_SUB(CURRENT_DATE, INTERVAL 55 DAY), 'Word/Excel cloud suite', 'cancelled', NOW()),
+(1018, 'Duolingo Plus', 'Education', 450, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 276 DAY), 'Language learning app', 'cancelled', NOW()),
+(1018, 'Figma Pro', 'Productivity', 850, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 262 DAY), 'Design mockups editor', 'cancelled', NOW()),
+(1018, 'Notion Plus', 'Productivity', 280, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 237 DAY), 'Workspace organization', 'cancelled', NOW()),
+(1018, 'ChatGPT Plus', 'Productivity', 3420, 'quarterly', 'Debit Card', DATE_SUB(CURRENT_DATE, INTERVAL 367 DAY), 'AI assistant tool', 'active', NOW()),
+(1019, 'AWS Hosting', 'Cloud Storage', 1250, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 396 DAY), 'Personal server hosting', 'paused', NOW()),
+(1019, 'Duolingo Plus', 'Education', 450, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 135 DAY), 'Language learning app', 'active', NOW()),
+(1019, 'YouTube Premium', 'Entertainment', 239, 'monthly', 'Debit Card', DATE_SUB(CURRENT_DATE, INTERVAL 370 DAY), 'Family plan', 'active', NOW()),
+(1019, 'Figma Pro', 'Productivity', 850, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 294 DAY), 'Design mockups editor', 'paused', NOW()),
+(1020, 'Slack Pro', 'Communication', 450, 'monthly', 'Bank Transfer', DATE_SUB(CURRENT_DATE, INTERVAL 88 DAY), 'Team chat collaboration tool', 'cancelled', NOW()),
+(1020, 'iCloud+ 200GB', 'Cloud Storage', 1490, 'annual', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 173 DAY), 'Cloud backup storage', 'cancelled', NOW()),
+(1020, 'Duolingo Plus', 'Education', 450, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 197 DAY), 'Language learning app', 'cancelled', NOW()),
+(1021, 'Spotify Duo', 'Entertainment', 894, 'semi-annual', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 280 DAY), 'Duo plan with spouse', 'cancelled', NOW()),
+(1021, 'Spotify Premium', 'Entertainment', 1290, 'annual', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 57 DAY), 'Solo music streaming', 'cancelled', NOW()),
+(1021, 'Adobe Creative Cloud', 'Software', 2900, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 211 DAY), 'Photoshop and Premiere Pro tools', 'cancelled', NOW()),
+(1022, 'Amazon Prime Video', 'Entertainment', 150, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 94 DAY), 'Included with delivery prime', 'active', NOW()),
+(1022, 'Laracasts', 'Education', 850, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 211 DAY), 'PHP tutorials learning platform', 'paused', NOW()),
+(1022, 'Gym Membership', 'Health', 10800, 'semi-annual', 'Bank Transfer', DATE_SUB(CURRENT_DATE, INTERVAL 208 DAY), 'Local fitness gym fee', 'paused', NOW()),
+(1022, 'Github Copilot', 'Software', 570, 'monthly', 'Maya', DATE_SUB(CURRENT_DATE, INTERVAL 382 DAY), 'Coding assistant', 'paused', NOW()),
+(1023, 'Dropbox Plus', 'Cloud Storage', 6800, 'annual', 'Debit Card', DATE_SUB(CURRENT_DATE, INTERVAL 168 DAY), 'Cloud storage backup storage', 'paused', NOW()),
+(1023, 'Slack Pro', 'Communication', 450, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 344 DAY), 'Team chat collaboration tool', 'cancelled', NOW()),
+(1023, 'Apple One', 'Entertainment', 2250, 'semi-annual', 'Debit Card', DATE_SUB(CURRENT_DATE, INTERVAL 255 DAY), 'iCloud + Music bundle', 'active', NOW()),
+(1024, 'NordVPN', 'Security', 299, 'monthly', 'GCash', DATE_SUB(CURRENT_DATE, INTERVAL 121 DAY), 'VPN security subscription', 'paused', NOW()),
+(1024, 'Dropbox Plus', 'Cloud Storage', 6800, 'annual', 'Debit Card', DATE_SUB(CURRENT_DATE, INTERVAL 359 DAY), 'Cloud storage backup storage', 'cancelled', NOW()),
+(1024, 'ChatGPT Plus', 'Productivity', 1140, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 85 DAY), 'AI assistant tool', 'active', NOW()),
+(1025, 'Adobe Creative Cloud', 'Software', 2900, 'monthly', 'Credit Card', DATE_SUB(CURRENT_DATE, INTERVAL 386 DAY), 'Photoshop and Premiere Pro tools', 'cancelled', NOW()),
+(1025, 'ChatGPT Plus', 'Productivity', 1140, 'monthly', 'PayPal', DATE_SUB(CURRENT_DATE, INTERVAL 360 DAY), 'AI assistant tool', 'paused', NOW()),
+(1025, 'Medium Premium', 'Education', 1710, 'semi-annual', 'Bank Transfer', DATE_SUB(CURRENT_DATE, INTERVAL 224 DAY), 'Tech articles publisher access', 'cancelled', NOW());

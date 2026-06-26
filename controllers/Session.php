@@ -5,8 +5,6 @@
  * Provides session lifecycle management (start, check, regenerate, destroy).
  */
 
-require_once dirname(__DIR__) . '/config/config.php';
-
 class Session
 {
     private static array $config = [];

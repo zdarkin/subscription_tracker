@@ -36,13 +36,65 @@ class Subscription
     // CRUD
     // ------------------------------------------------------------------
 
+    public static function calculateNextRenewal(string $startDate, string $billingCycle): string
+    {
+        $start = new DateTime($startDate);
+        $now = new DateTime('today');
+
+        if ($start >= $now) {
+            return $start->format('Y-m-d');
+        }
+
+        $cycleMonths = [
+            'monthly'     => 1,
+            'quarterly'   => 3,
+            'semi-annual' => 6,
+            'annual'      => 12,
+        ];
+        $monthsToAdd = $cycleMonths[$billingCycle] ?? 1;
+
+        $cycles = 0;
+        while (true) {
+            $year = (int)$start->format('Y');
+            $month = (int)$start->format('n');
+            $day = (int)$start->format('j');
+            
+            $month += $cycles * $monthsToAdd;
+            
+            // Normalize month and year
+            $year += (int)floor(($month - 1) / 12);
+            $month = (($month - 1) % 12) + 1;
+            
+            // Get the number of days in the target month
+            $daysInTargetMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+            
+            // Cap the day to the last day of the target month
+            $targetDay = min($day, $daysInTargetMonth);
+            
+            $targetDate = new DateTime(sprintf('%04d-%02d-%02d', $year, $month, $targetDay));
+            
+            if ($targetDate >= $now) {
+                return $targetDate->format('Y-m-d');
+            }
+            
+            $cycles++;
+        }
+    }
+
     public function getAll(int $userId): array
     {
         $stmt = $this->db->prepare(
-            'SELECT * FROM subscriptions WHERE user_id = ? ORDER BY renewal_date ASC'
+            'SELECT * FROM subscriptions WHERE user_id = ?'
         );
         $stmt->execute([$userId]);
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+        foreach ($rows as &$row) {
+            $row['next_renewal_date'] = self::calculateNextRenewal($row['start_date'], $row['billing_cycle']);
+        }
+        usort($rows, function ($a, $b) {
+            return strtotime($a['next_renewal_date']) <=> strtotime($b['next_renewal_date']);
+        });
+        return $rows;
     }
 
     public function getById(int $id, int $userId): array|false
@@ -51,16 +103,20 @@ class Subscription
             'SELECT * FROM subscriptions WHERE id = ? AND user_id = ?'
         );
         $stmt->execute([$id, $userId]);
-        return $stmt->fetch();
+        $row = $stmt->fetch();
+        if ($row) {
+            $row['next_renewal_date'] = self::calculateNextRenewal($row['start_date'], $row['billing_cycle']);
+        }
+        return $row;
     }
 
     public function create(array $data): int|false
     {
         $stmt = $this->db->prepare(
             'INSERT INTO subscriptions
-                (user_id, service_name, category, cost, billing_cycle, payment_method, renewal_date, notes, status)
+                (user_id, service_name, category, cost, billing_cycle, payment_method, start_date, notes, status)
              VALUES
-                (:user_id, :service_name, :category, :cost, :billing_cycle, :payment_method, :renewal_date, :notes, :status)'
+                (:user_id, :service_name, :category, :cost, :billing_cycle, :payment_method, :start_date, :notes, :status)'
         );
 
         try {
@@ -71,7 +127,7 @@ class Subscription
                 ':cost'           => $data['cost'],
                 ':billing_cycle'  => $data['billing_cycle'],
                 ':payment_method' => $data['payment_method'] ?? 'Credit Card',
-                ':renewal_date'   => $data['renewal_date'],
+                ':start_date'     => $data['start_date'],
                 ':notes'          => $data['notes']          ?? null,
                 ':status'         => $data['status']         ?? 'active',
             ]);
@@ -91,7 +147,7 @@ class Subscription
                 cost           = :cost,
                 billing_cycle  = :billing_cycle,
                 payment_method = :payment_method,
-                renewal_date   = :renewal_date,
+                start_date     = :start_date,
                 notes          = :notes,
                 status         = :status
              WHERE id = :id AND user_id = :user_id'
@@ -104,7 +160,7 @@ class Subscription
                 ':cost'           => $data['cost'],
                 ':billing_cycle'  => $data['billing_cycle'],
                 ':payment_method' => $data['payment_method'] ?? 'Credit Card',
-                ':renewal_date'   => $data['renewal_date'],
+                ':start_date'     => $data['start_date'],
                 ':notes'          => $data['notes']          ?? null,
                 ':status'         => $data['status']         ?? 'active',
                 ':id'             => $id,
@@ -156,22 +212,60 @@ class Subscription
     {
         $stmt = $this->db->prepare(
             "SELECT * FROM subscriptions
-             WHERE user_id = ?
-               AND status = 'active'
-               AND renewal_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL ? DAY)
-             ORDER BY renewal_date ASC"
+             WHERE user_id = ? AND status = 'active'"
         );
-        $stmt->execute([$userId, $days]);
-        return $stmt->fetchAll();
+        $stmt->execute([$userId]);
+        $rows = $stmt->fetchAll();
+
+        $upcoming = [];
+        $today = new DateTime('today');
+        $limitDate = (clone $today)->modify("+$days days");
+
+        foreach ($rows as $row) {
+            $next = self::calculateNextRenewal($row['start_date'], $row['billing_cycle']);
+            $nextDate = new DateTime($next);
+            
+            if ($nextDate >= $today && $nextDate <= $limitDate) {
+                $row['next_renewal_date'] = $next;
+                $upcoming[] = $row;
+            }
+        }
+
+        usort($upcoming, function($a, $b) {
+            return strtotime($a['next_renewal_date']) <=> strtotime($b['next_renewal_date']);
+        });
+
+        return $upcoming;
     }
 
-    /**
-     * Active subscription count.
-     */
     public function getActiveCount(int $userId): int
     {
         $stmt = $this->db->prepare(
             "SELECT COUNT(*) FROM subscriptions WHERE user_id = ? AND status = 'active'"
+        );
+        $stmt->execute([$userId]);
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
+     * Paused subscription count.
+     */
+    public function getPausedCount(int $userId): int
+    {
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) FROM subscriptions WHERE user_id = ? AND status = 'paused'"
+        );
+        $stmt->execute([$userId]);
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
+     * Cancelled subscription count.
+     */
+    public function getCancelledCount(int $userId): int
+    {
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) FROM subscriptions WHERE user_id = ? AND status = 'cancelled'"
         );
         $stmt->execute([$userId]);
         return (int) $stmt->fetchColumn();
@@ -220,16 +314,33 @@ class Subscription
             "SELECT s.*, u.email AS user_email, u.username
              FROM subscriptions s
              JOIN users u ON s.user_id = u.id
-             LEFT JOIN email_logs el
-                    ON el.subscription_id = s.id
-                   AND el.renewal_date    = s.renewal_date
-                   AND el.lead_days       = ?
-             WHERE s.status      = 'active'
-               AND s.renewal_date = DATE_ADD(CURDATE(), INTERVAL ? DAY)
-               AND el.id IS NULL"
+             WHERE s.status = 'active'"
         );
-        $stmt->execute([$daysAhead, $daysAhead]);
-        return $stmt->fetchAll();
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+
+        $due = [];
+        $targetDateStr = date('Y-m-d', strtotime("+$daysAhead days"));
+
+        foreach ($rows as $row) {
+            $nextRenewal = self::calculateNextRenewal($row['start_date'], $row['billing_cycle']);
+            if ($nextRenewal === $targetDateStr) {
+                // Check if already alerted for this specific renewal date
+                $checkStmt = $this->db->prepare(
+                    "SELECT 1 FROM email_logs 
+                     WHERE subscription_id = ? 
+                       AND renewal_date = ? 
+                       AND lead_days = ?"
+                );
+                $checkStmt->execute([$row['id'], $nextRenewal, $daysAhead]);
+                if (!$checkStmt->fetchColumn()) {
+                    $row['renewal_date'] = $nextRenewal; // set it so the worker can use $item['renewal_date']
+                    $due[] = $row;
+                }
+            }
+        }
+
+        return $due;
     }
 
     /**

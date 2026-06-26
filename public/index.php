@@ -123,6 +123,15 @@ switch (true) {
         $subCtrl->store();
         break;
 
+    // Subscriptions – show details
+    case (preg_match('#^/subscriptions/show/(\d+)$#', $path, $m) && $method === 'GET'):
+        if (Session::isLoggedIn() && Session::isAdmin()) {
+            header('Location: /admin');
+            exit;
+        }
+        $subCtrl->show((int) $m[1]);
+        break;
+
     // Subscriptions – edit form
     case (preg_match('#^/subscriptions/edit/(\d+)$#', $path, $m) && $method === 'GET'):
         if (Session::isLoggedIn() && Session::isAdmin()) {
@@ -153,6 +162,11 @@ switch (true) {
     // Admin Panel – dashboard
     case ($path === '/admin' && $method === 'GET'):
         $adminCtrl->dashboard();
+        break;
+
+    // Admin Panel – trigger email worker
+    case ($path === '/admin/trigger-worker' && $method === 'POST'):
+        $adminCtrl->triggerWorker();
         break;
 
     // Admin Panel – users list

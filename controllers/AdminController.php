@@ -56,6 +56,37 @@ class AdminController
     }
 
     // ------------------------------------------------------------------
+    // Trigger Email Alert Worker (POST API)
+    // ------------------------------------------------------------------
+    public function triggerWorker(): void
+    {
+        $this->requireAdmin();
+
+        $scriptPath = dirname(__DIR__) . '/scripts/email_worker.php';
+        $command = 'php ' . escapeshellarg($scriptPath) . ' 2>&1';
+
+        $output = [];
+        $returnVar = 0;
+        exec($command, $output, $returnVar);
+
+        header('Content-Type: application/json');
+        if ($returnVar === 0) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Email worker finished successfully.',
+                'output'  => implode("\n", $output)
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Email worker returned error code: ' . $returnVar,
+                'output'  => implode("\n", $output)
+            ]);
+        }
+        exit;
+    }
+
+    // ------------------------------------------------------------------
     // Users List (with search)
     // ------------------------------------------------------------------
     public function users(): void
@@ -328,7 +359,7 @@ class AdminController
                 'cost'           => (float) $_POST['cost'],
                 'billing_cycle'  => $_POST['billing_cycle'],
                 'payment_method' => $this->sanitize($_POST['payment_method'] ?? 'Credit Card'),
-                'renewal_date'   => $_POST['renewal_date'],
+                'start_date'     => $_POST['start_date'],
                 'notes'          => $this->sanitize($_POST['notes'] ?? ''),
                 'status'         => $_POST['status'] ?? 'active',
             ];
@@ -385,7 +416,7 @@ class AdminController
                 'cost'           => (float) $_POST['cost'],
                 'billing_cycle'  => $_POST['billing_cycle'],
                 'payment_method' => $this->sanitize($_POST['payment_method'] ?? 'Credit Card'),
-                'renewal_date'   => $_POST['renewal_date'],
+                'start_date'     => $_POST['start_date'],
                 'notes'          => $this->sanitize($_POST['notes'] ?? ''),
                 'status'         => $_POST['status'] ?? 'active',
             ];
@@ -463,9 +494,9 @@ class AdminController
             $errors[] = 'Invalid billing cycle.';
         }
 
-        $date = $post['renewal_date'] ?? '';
+        $date = $post['start_date'] ?? '';
         if (empty($date) || !strtotime($date)) {
-            $errors[] = 'A valid renewal date is required.';
+            $errors[] = 'A valid subscription start date is required.';
         }
 
         $validStatuses = ['active', 'paused', 'cancelled'];

@@ -30,6 +30,8 @@ class DashboardController
             'monthly_spend'    => $this->subModel->getTotalMonthlySpend($userId),
             'annual_spend'     => $this->subModel->getTotalAnnualSpend($userId),
             'active_count'     => $this->subModel->getActiveCount($userId),
+            'paused_count'     => $this->subModel->getPausedCount($userId),
+            'cancelled_count'  => $this->subModel->getCancelledCount($userId),
             'upcoming'         => $this->subModel->getUpcomingRenewals($userId, 7),
             'category_data'    => $this->subModel->getSpendByCategory($userId),
             'all_subs'         => $this->subModel->getAll($userId),

@@ -37,7 +37,7 @@ class AuthController
         }
 
         $identifier = trim($_POST['identifier'] ?? '');
-        $password   = trim($_POST['password'] ?? '');
+        $password   = $_POST['password'] ?? '';
 
         // Basic validation
         if (empty($identifier) || empty($password)) {

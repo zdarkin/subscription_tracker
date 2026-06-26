@@ -18,7 +18,10 @@ require_once dirname(__DIR__) . '/layout/header.php';
     <div class="w-full max-w-md animate-slide-up">
 
         <!-- Logo -->
-
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-white mb-1">Welcome back</h1>
+            <p class="text-gray-400 text-sm">Sign in to manage your subscriptions</p>
+        </div>
         <!-- Flash Messages -->
         <?php if (!empty($error)): ?>
             <div class="flash-message mb-5 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm flex items-start gap-3 animate-fade-in">
