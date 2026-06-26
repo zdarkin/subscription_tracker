@@ -26,12 +26,21 @@ $chartValues  = array_map(fn($r) => round((float)$r['monthly_spend'], 2), $data[
 
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-white">
-                    Welcome back,
-                    <span class="bg-gradient-to-r from-brand-300 to-purple-400 bg-clip-text text-transparent"><?= htmlspecialchars($data['username'], ENT_QUOTES) ?></span>!
-                </h1>
-                <p class="text-gray-400 mt-1 text-sm"><?= date('l, F j, Y') ?></p>
+            <div class="flex items-center gap-4">
+                <a href="javascript:history.back()"
+                   class="p-2 rounded-xl bg-surface-700 hover:bg-surface-600 text-gray-400 hover:text-white transition-all duration-200"
+                   aria-label="Go back">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                </a>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-white">
+                        Welcome back,
+                        <span class="bg-gradient-to-r from-brand-300 to-purple-400 bg-clip-text text-transparent"><?= htmlspecialchars($data['username'], ENT_QUOTES) ?></span>!
+                    </h1>
+                    <p class="text-gray-400 mt-1 text-sm"><?= date('l, F j, Y') ?></p>
+                </div>
             </div>
             <a href="/subscriptions/create" class="btn-primary self-start sm:self-auto">
                 <svg class="w-4 h-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">

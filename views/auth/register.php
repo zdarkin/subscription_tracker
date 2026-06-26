@@ -23,12 +23,7 @@ if (!empty($error)) {
 
     <div class="w-full max-w-md animate-slide-up">
 
-        <!-- Logo -->
-        <div class="text-center mb-8">
-            <img src="/images/logo.png" class="w-24 h-24 mx-auto rounded-3xl shadow-glow-lg mb-4 hover:scale-105 transition-transform duration-300 border border-white/5 bg-surface-800" alt="SubsTrack Logo" />
-            <h1 class="text-3xl font-bold text-white mb-1">Create your account</h1>
-            <p class="text-gray-400 text-sm">Start tracking subscriptions for free</p>
-        </div>
+
 
         <!-- Error Messages -->
         <?php if (!empty($errors)): ?>

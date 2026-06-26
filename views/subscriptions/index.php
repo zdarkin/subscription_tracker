@@ -33,9 +33,18 @@ $isAdmin = \Session::isAdmin();
 
         <!-- Page Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-white">My Subscriptions</h1>
-                <p class="text-gray-400 text-sm mt-1"><?= count($subscriptions) ?> subscription<?= count($subscriptions) !== 1 ? 's' : '' ?> tracked</p>
+            <div class="flex items-center gap-4">
+                <a href="/dashboard"
+                   class="p-2 rounded-xl bg-surface-700 hover:bg-surface-600 text-gray-400 hover:text-white transition-all duration-200"
+                   aria-label="Go back">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-bold text-white">My Subscriptions</h1>
+                    <p class="text-gray-400 text-sm mt-0.5"><?= count($subscriptions) ?> subscription<?= count($subscriptions) !== 1 ? 's' : '' ?> tracked</p>
+                </div>
             </div>
             <div class="flex items-center gap-3">
                 <!-- Search -->

@@ -15,9 +15,6 @@ $currentPath     = strtok($_SERVER['REQUEST_URI'], '?');
 
             <!-- Logo -->
             <a href="<?= $currentRole === 'admin' ? '/admin' : '/dashboard' ?>" class="flex items-center gap-3 group">
-                <div class="w-9 h-9 rounded-xl overflow-hidden shadow-glow group-hover:shadow-glow-lg transition-all duration-300 bg-surface-800 flex items-center justify-center">
-                    <img src="/images/logo.png" class="w-full h-full scale-125" style="object-fit: cover; object-position: 50% 25%;" alt="SubsTrack Logo" />
-                </div>
                 <span class="text-lg font-bold bg-gradient-to-r from-brand-300 to-purple-400 bg-clip-text text-transparent">SubsTrack</span>
             </a>
 

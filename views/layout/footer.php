@@ -23,9 +23,6 @@ $currentRole = Session::get('user_role', 'user');
             <!-- Branding & Copyright Info -->
             <div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
                 <a href="<?= $isLoggedIn ? ($currentRole === 'admin' ? '/admin' : '/dashboard') : '/' ?>" class="flex items-center gap-2.5 group">
-                    <div class="w-8 h-8 rounded-lg overflow-hidden bg-surface-800 flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all duration-300">
-                        <img src="/images/logo.png" class="w-full h-full scale-125" style="object-fit: cover; object-position: 50% 25%;" alt="SubsTrack Logo" />
-                    </div>
                     <span class="text-base font-bold bg-gradient-to-r from-brand-300 to-purple-400 bg-clip-text text-transparent">SubsTrack</span>
                 </a>
                 <div class="h-4 w-px bg-white/10 hidden sm:block"></div>
