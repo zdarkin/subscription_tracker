@@ -1,0 +1,14 @@
+{
+    "name": "subscription-tracker/app",
+    "description": "Recurring Subscription Tracking System with Email Notifications",
+    "type": "project",
+    "require": {
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
