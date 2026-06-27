@@ -32,9 +32,17 @@ class Env
             $key   = trim($key);
             $value = trim($value);
 
-            // Strip surrounding quotes (single or double)
-            if (preg_match('/^["\'](.*)["\']$/', $value, $matches)) {
+            // Strip surrounding quotes and inline comments robustly
+            if (preg_match('/^"([^"]*)"/', $value, $matches)) {
                 $value = $matches[1];
+            } elseif (preg_match('/^\'([^\']*)\'/', $value, $matches)) {
+                $value = $matches[1];
+            } else {
+                // For unquoted values, strip any inline comments
+                if (str_contains($value, '#')) {
+                    [$value] = explode('#', $value, 2);
+                    $value = trim($value);
+                }
             }
 
             if (!array_key_exists($key, $_ENV)) {

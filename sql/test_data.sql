@@ -1,6 +1,6 @@
 -- =============================================================
 -- Recurring Subscription Tracking System
--- Sample / Test Data Seed Script (Expanded)
+-- Sample / Test Data Seed Script 
 -- =============================================================
 
 USE subscription_tracker;
@@ -14,9 +14,10 @@ DELETE FROM users WHERE email LIKE '%@example.com';
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- 1. Insert Test Users 
--- PASSWORD for all users: password123
+-- PASSWORD for admin: admin123
+-- PASSWORD for users: password123
 INSERT INTO users (id, username, email, password, role, created_at) VALUES
-(1001, 'john_admin', 'john.admin@example.com', '$2y$12$dE1iUWUEl9QOPXsj4zdBBu7TbcaDvcJkdPfXnB9WFIDuUGwQwSf4C', 'admin', NOW()),
+(1001, 'admin', 'admin@example.com', '$2y$12$dE1iUWUEl9QOPXsj4zdBBu7TbcaDvcJkdPfXnB9WFIDuUGwQwSf4C', 'admin', NOW()),
 (1002, 'alice_smith', 'alice@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
 (1003, 'bob_jones', 'bob@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
 (1004, 'charlie_brown', 'charlie@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),

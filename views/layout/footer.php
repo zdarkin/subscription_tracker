@@ -64,6 +64,29 @@ $currentRole = Session::get('user_role', 'user');
 <!-- App JS -->
 <script src="/js/app.js" defer></script>
 
+<!-- Lazy Cron Trigger (InfinityFree Compatibility) -->
+<?php
+if ($isLoggedIn):
+    $cronFile = dirname(__DIR__, 2) . '/cron_last_run.txt';
+    $lastRun  = file_exists($cronFile) ? trim(file_get_contents($cronFile)) : '';
+    $today    = date('Y-m-d');
+    
+    if ($lastRun !== $today):
+        $workerToken = $_ENV['WORKER_TOKEN'] ?? '';
+?>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch('/scripts/email_worker.php?token=<?= urlencode($workerToken) ?>')
+            .then(res => res.text())
+            .then(text => console.log('[Lazy Cron] Result:', text.trim()))
+            .catch(err => console.error('[Lazy Cron] Failed:', err));
+    });
+</script>
+<?php 
+    endif;
+endif; 
+?>
+
 </body>
 
 </html>

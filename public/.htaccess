@@ -8,3 +8,8 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 # Route everything else through index.php
 RewriteRule ^(.*)$ index.php [QSA,L]
+
+<Files ".env">
+    Order allow,deny
+    Deny from all
+</Files>

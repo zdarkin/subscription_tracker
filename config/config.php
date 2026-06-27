@@ -19,6 +19,8 @@ return [
         'name'    => $_ENV['SESSION_NAME'] ?? 'substrkr_sess',
     ],
     'mail' => [
+        'mailer'       => $_ENV['MAIL_MAILER']       ?? 'smtp',
+        'resend_key'   => $_ENV['RESEND_API_KEY']    ?? '',
         'host'         => $_ENV['MAIL_HOST']         ?? 'smtp.gmail.com',
         'port'         => (int) ($_ENV['MAIL_PORT']  ?? 587),
         'username'     => $_ENV['MAIL_USERNAME']     ?? '',
