@@ -33,6 +33,24 @@ class Database
                 PDO::ATTR_TIMEOUT            => 5,
             ];
 
+            // Enforce SSL for TiDB Serverless if configured
+            if (($_ENV['DB_SSL'] ?? 'false') === 'true') {
+                if (!empty($_ENV['DB_SSL_CA'])) {
+                    $caPath = $_ENV['DB_SSL_CA'];
+                    // Resolve relative paths relative to project root
+                    $isAbsolute = (strpos($caPath, '/') === 0 || strpos($caPath, ':') === 1 || strpos($caPath, '\\\\') === 0);
+                    if (!$isAbsolute) {
+                        $caPath = dirname(__DIR__) . '/' . $caPath;
+                    }
+                    $options[PDO::MYSQL_ATTR_SSL_CA] = $caPath;
+                }
+                if (($_ENV['DB_SSL_VERIFY'] ?? 'true') === 'false') {
+                    $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+                } else {
+                    $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+                }
+            }
+
             try {
                 self::$instance = new PDO($dsn, $user, $pass, $options);
             } catch (PDOException $e) {

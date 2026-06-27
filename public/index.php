@@ -22,9 +22,21 @@ require_once BASE_PATH . '/controllers/AdminController.php';
 // Parse the request URI
 // -----------------------------------------------------------------
 $requestUri    = $_SERVER['REQUEST_URI'];
-$scriptName    = dirname($_SERVER['SCRIPT_NAME']);  // e.g. /subscription-tracker/public
-$path          = substr($requestUri, strlen($scriptName));
-$path          = strtok($path, '?');                // strip query string
+$scriptName    = $_SERVER['SCRIPT_NAME'];
+
+// Clean directories, handling Windows backslashes
+$scriptDir     = str_replace('\\', '/', dirname($scriptName));
+
+// If URL rewriting hid /public/, adjust the script prefix comparison path
+if (strpos($requestUri, $scriptDir) !== 0) {
+    if (str_ends_with($scriptDir, '/public')) {
+        $scriptDir = substr($scriptDir, 0, -7);
+    }
+}
+
+// Substring comparison, stripping script directory prefix
+$path          = (strlen($scriptDir) > 1) ? substr($requestUri, strlen($scriptDir)) : $requestUri;
+$path          = strtok($path, '?'); // strip query string
 $path          = '/' . trim($path, '/');
 $method        = $_SERVER['REQUEST_METHOD'];
 

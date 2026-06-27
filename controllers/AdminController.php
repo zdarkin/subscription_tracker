@@ -62,25 +62,41 @@ class AdminController
     {
         $this->requireAdmin();
 
-        $scriptPath = dirname(__DIR__) . '/scripts/email_worker.php';
-        $command = 'php ' . escapeshellarg($scriptPath) . ' 2>&1';
+        // Trigger via local HTTP request to bypass disabled shell exec() on shared hosting
+        $token = $_ENV['WORKER_TOKEN'] ?? '';
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'];
+        $url = $protocol . $host . '/scripts/email_worker.php?token=' . urlencode($token);
 
-        $output = [];
-        $returnVar = 0;
-        exec($command, $output, $returnVar);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
 
         header('Content-Type: application/json');
-        if ($returnVar === 0) {
+        if ($curlError) {
             echo json_encode([
-                'success' => true,
-                'message' => 'Email worker finished successfully.',
-                'output'  => implode("\n", $output)
+                'success' => false,
+                'message' => 'Failed to connect to email worker.',
+                'output'  => 'CURL Error: ' . $curlError
+            ]);
+        } elseif ($httpCode !== 200) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Email worker returned HTTP code: ' . $httpCode,
+                'output'  => $response
             ]);
         } else {
             echo json_encode([
-                'success' => false,
-                'message' => 'Email worker returned error code: ' . $returnVar,
-                'output'  => implode("\n", $output)
+                'success' => true,
+                'message' => 'Email worker finished successfully.',
+                'output'  => $response
             ]);
         }
         exit;
