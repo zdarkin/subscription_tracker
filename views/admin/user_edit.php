@@ -44,6 +44,20 @@ require_once __DIR__ . '/../layout/navbar.php';
             <form method="POST" action="/admin/users/<?= $old['id'] ?>/edit" novalidate>
                 <div class="space-y-4">
 
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label for="full_name" class="form-label">Full Name</label>
+                        <div class="relative">
+                            <span class="input-icon">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </span>
+                            <input type="text" id="full_name" name="full_name" class="form-input pl-10"
+                                value="<?= htmlspecialchars($old['full_name'] ?? '', ENT_QUOTES) ?>" required />
+                        </div>
+                    </div>
+
                     <!-- Username -->
                     <div class="form-group">
                         <label for="username" class="form-label">Username</label>

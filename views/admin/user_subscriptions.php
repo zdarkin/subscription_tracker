@@ -3,8 +3,8 @@ $user            = $user ?? [];
 $subscriptions   = $subscriptions ?? [];
 $flash_success   = $flash_success ?? null;
 $flash_error     = $flash_error ?? null;
-$pageTitle       = "Subscriptions for " . htmlspecialchars($user['username'] ?? '', ENT_QUOTES);
-$pageDescription = "Manage subscriptions on behalf of " . htmlspecialchars($user['username'] ?? '', ENT_QUOTES);
+$pageTitle       = "Subscriptions for " . htmlspecialchars($user['full_name'] ?? $user['username'] ?? '', ENT_QUOTES);
+$pageDescription = "Manage subscriptions on behalf of " . htmlspecialchars($user['full_name'] ?? $user['username'] ?? '', ENT_QUOTES);
 require_once __DIR__ . '/../layout/header.php';
 require_once __DIR__ . '/../layout/navbar.php';
 ?>
@@ -36,9 +36,9 @@ require_once __DIR__ . '/../layout/navbar.php';
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-white flex items-center gap-2">
-                    Subscriptions: <span class="bg-gradient-brand bg-clip-text text-transparent"><?= htmlspecialchars($user['username'], ENT_QUOTES) ?></span>
+                    Subscriptions: <span class="bg-gradient-brand bg-clip-text text-transparent"><?= htmlspecialchars($user['full_name'] ?? $user['username'], ENT_QUOTES) ?></span>
                 </h1>
-                <p class="text-gray-500 text-sm mt-0.5"><?= htmlspecialchars($user['email'], ENT_QUOTES) ?> · <?= count($subscriptions) ?> subscription(s)</p>
+                <p class="text-gray-500 text-sm mt-0.5"><?= htmlspecialchars($user['email'], ENT_QUOTES) ?> (@<?= htmlspecialchars($user['username'], ENT_QUOTES) ?>) · <?= count($subscriptions) ?> subscription(s)</p>
             </div>
             <div>
                 <a href="/admin/users/<?= $user['id'] ?>/subscriptions/create" class="btn-primary">

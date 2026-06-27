@@ -131,14 +131,21 @@ class AdminController
         $this->requireAdmin();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $username = trim($_POST['username'] ?? '');
-            $email    = trim($_POST['email'] ?? '');
-            $role     = trim($_POST['role'] ?? 'user');
-            $password = $_POST['password'] ?? '';
-            $confirm  = $_POST['confirm'] ?? '';
-            $errors   = [];
+            $username  = trim($_POST['username'] ?? '');
+            $full_name = trim($_POST['full_name'] ?? '');
+            $email     = trim($_POST['email'] ?? '');
+            $role      = trim($_POST['role'] ?? 'user');
+            $password  = $_POST['password'] ?? '';
+            $confirm   = $_POST['confirm'] ?? '';
+            $errors    = [];
 
             // Validation
+            if (empty($full_name) || strlen($full_name) < 2) {
+                $errors[] = 'Full name must be at least 2 characters.';
+            }
+            if (!preg_match('/^[a-zA-Z\s]+$/', $full_name)) {
+                $errors[] = 'Full name may only contain letters and spaces.';
+            }
             if (empty($username) || strlen($username) < 3) {
                 $errors[] = 'Username must be at least 3 characters.';
             }
@@ -181,7 +188,7 @@ class AdminController
                 exit;
             }
 
-            $userId = $this->userModel->createOnBehalf($username, $email, $password, $role);
+            $userId = $this->userModel->createOnBehalf($username, $full_name, $email, $password, $role);
 
             if (!$userId) {
                 Session::flash('error', 'Failed to create user. Please try again.');
@@ -214,14 +221,21 @@ class AdminController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $username = trim($_POST['username'] ?? '');
-            $email    = trim($_POST['email'] ?? '');
-            $role     = trim($_POST['role'] ?? 'user');
-            $password = $_POST['password'] ?? '';
-            $confirm  = $_POST['confirm'] ?? '';
-            $errors   = [];
+            $username  = trim($_POST['username'] ?? '');
+            $full_name = trim($_POST['full_name'] ?? '');
+            $email     = trim($_POST['email'] ?? '');
+            $role      = trim($_POST['role'] ?? 'user');
+            $password  = $_POST['password'] ?? '';
+            $confirm   = $_POST['confirm'] ?? '';
+            $errors    = [];
 
             // Validation
+            if (empty($full_name) || strlen($full_name) < 2) {
+                $errors[] = 'Full name must be at least 2 characters.';
+            }
+            if (!preg_match('/^[a-zA-Z\s]+$/', $full_name)) {
+                $errors[] = 'Full name may only contain letters and spaces.';
+            }
             if (empty($username) || strlen($username) < 3) {
                 $errors[] = 'Username must be at least 3 characters.';
             }
@@ -267,7 +281,7 @@ class AdminController
                 exit;
             }
 
-            $ok = $this->userModel->updateUserOnBehalf($id, $username, $email, $role, !empty($password) ? $password : null);
+            $ok = $this->userModel->updateUserOnBehalf($id, $username, $full_name, $email, $role, !empty($password) ? $password : null);
 
             if (!$ok) {
                 Session::flash('error', 'Failed to update user. Please try again.');
@@ -278,6 +292,7 @@ class AdminController
             // If admin updated their own username/email/role, update session
             if ($id === (int) Session::get('user_id')) {
                 Session::set('user_username', $username);
+                Session::set('user_full_name', $full_name);
                 Session::set('user_email', $email);
                 Session::set('user_role', $role);
                 if ($role !== 'admin') {

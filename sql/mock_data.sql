@@ -16,32 +16,32 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- 1. Insert Test Users 
 -- PASSWORD for admin: admin123
 -- PASSWORD for users: password123
-INSERT INTO users (id, username, email, password, role, created_at) VALUES
-(1001, 'admin', 'admin@example.com', '$2y$12$dE1iUWUEl9QOPXsj4zdBBu7TbcaDvcJkdPfXnB9WFIDuUGwQwSf4C', 'admin', NOW()),
-(1002, 'alice_smith', 'alice@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1003, 'bob_jones', 'bob@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1004, 'charlie_brown', 'charlie@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1005, 'diana_prince', 'diana@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1006, 'james_smith', 'james.smith@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1007, 'mary_johnson', 'mary.johnson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1008, 'john_williams', 'john.williams@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1009, 'patricia_brown', 'patricia.brown@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1010, 'robert_jones', 'robert.jones@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1011, 'jennifer_garcia', 'jennifer.garcia@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1012, 'michael_miller', 'michael.miller@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1013, 'linda_davis', 'linda.davis@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1014, 'william_rodriguez', 'william.rodriguez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1015, 'elizabeth_martinez', 'elizabeth.martinez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1016, 'david_hernandez', 'david.hernandez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1017, 'barbara_lopez', 'barbara.lopez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1018, 'richard_gonzalez', 'richard.gonzalez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1019, 'susan_wilson', 'susan.wilson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1020, 'joseph_anderson', 'joseph.anderson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1021, 'jessica_thomas', 'jessica.thomas@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1022, 'thomas_taylor', 'thomas.taylor@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1023, 'sarah_moore', 'sarah.moore@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1024, 'charles_jackson', 'charles.jackson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
-(1025, 'karen_martin', 'karen.martin@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW());
+INSERT INTO users (id, username, full_name, email, password, role, created_at) VALUES
+(1001, 'admin', 'System Administrator', 'admin@example.com', '$2y$12$dE1iUWUEl9QOPXsj4zdBBu7TbcaDvcJkdPfXnB9WFIDuUGwQwSf4C', 'admin', NOW()),
+(1002, 'alice_smith', 'Alice Smith', 'alice@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1003, 'bob_jones', 'Bob Jones', 'bob@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1004, 'charlie_brown', 'Charlie Brown', 'charlie@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1005, 'diana_prince', 'Diana Prince', 'diana@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1006, 'james_smith', 'James Smith', 'james.smith@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1007, 'mary_johnson', 'Mary Johnson', 'mary.johnson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1008, 'john_williams', 'John Williams', 'john.williams@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1009, 'patricia_brown', 'Patricia Brown', 'patricia.brown@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1010, 'robert_jones', 'Robert Jones', 'robert.jones@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1011, 'jennifer_garcia', 'Jennifer Garcia', 'jennifer.garcia@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1012, 'michael_miller', 'Michael Miller', 'michael.miller@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1013, 'linda_davis', 'Linda Davis', 'linda.davis@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1014, 'william_rodriguez', 'William Rodriguez', 'william.rodriguez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1015, 'elizabeth_martinez', 'Elizabeth Martinez', 'elizabeth.martinez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1016, 'david_hernandez', 'David Hernandez', 'david.hernandez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1017, 'barbara_lopez', 'Barbara Lopez', 'barbara.lopez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1018, 'richard_gonzalez', 'Richard Gonzalez', 'richard.gonzalez@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1019, 'susan_wilson', 'Susan Wilson', 'susan.wilson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1020, 'joseph_anderson', 'Joseph Anderson', 'joseph.anderson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1021, 'jessica_thomas', 'Jessica Thomas', 'jessica.thomas@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1022, 'thomas_taylor', 'Thomas Taylor', 'thomas.taylor@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1023, 'sarah_moore', 'Sarah Moore', 'sarah.moore@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1024, 'charles_jackson', 'Charles Jackson', 'charles.jackson@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW()),
+(1025, 'karen_martin', 'Karen Martin', 'karen.martin@example.com', '$2y$12$7FRYI1TUn1.UKRqpBRQjae68eKyafgdL8t5k80vH0UwdNa0sOZEEy', 'user', NOW());
 
 -- 2. Insert Test Subscriptions
 INSERT INTO subscriptions (user_id, service_name, category, cost, billing_cycle, payment_method, start_date, notes, status, created_at) VALUES
