@@ -2,7 +2,7 @@
 
 /**
  * Session Helper
- * Provides session lifecycle management (start, check, regenerate, destroy).
+ * Session lifecycle management (start, check, regenerate, destroy).
  */
 
 class Session

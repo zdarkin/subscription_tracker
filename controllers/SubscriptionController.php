@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SubscriptionController
  * Handles CRUD operations for user subscriptions.
@@ -17,9 +18,6 @@ class SubscriptionController
         $this->subModel = new Subscription();
     }
 
-    // ------------------------------------------------------------------
-    // Guard: authenticated
-    // ------------------------------------------------------------------
     private function requireAuth(): void
     {
         if (!Session::isLoggedIn()) {
@@ -78,7 +76,7 @@ class SubscriptionController
     }
 
     // ------------------------------------------------------------------
-    // Store (POST)
+    // Store
     // ------------------------------------------------------------------
     public function store(): void
     {
@@ -146,7 +144,7 @@ class SubscriptionController
     }
 
     // ------------------------------------------------------------------
-    // Update (POST)
+    // Update
     // ------------------------------------------------------------------
     public function update(int $id): void
     {
@@ -192,7 +190,7 @@ class SubscriptionController
     }
 
     // ------------------------------------------------------------------
-    // Delete (POST, Admin only)
+    // Delete
     // ------------------------------------------------------------------
     public function delete(int $id): void
     {

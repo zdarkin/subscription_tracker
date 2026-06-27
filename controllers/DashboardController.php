@@ -1,7 +1,8 @@
 <?php
+
 /**
  * DashboardController
- * Aggregates analytics data and renders the main dashboard view.
+ * Combine analytics data and renders the main dashboard view.
  */
 
 require_once dirname(__DIR__) . '/models/Subscription.php';

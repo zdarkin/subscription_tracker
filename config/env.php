@@ -2,8 +2,6 @@
 
 /**
  * .env Parser
- * Lightweight parser that reads key=value pairs from the .env file
- * and populates $_ENV and putenv().
  */
 class Env
 {

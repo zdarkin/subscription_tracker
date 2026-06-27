@@ -222,6 +222,11 @@ switch (true) {
         $adminCtrl->deleteUserSubscription((int) $m[1], (int) $m[2]);
         break;
 
+    // Email Alert Worker web endpoint
+    case ($path === '/scripts/email_worker.php'):
+        require_once BASE_PATH . '/scripts/email_worker.php';
+        break;
+
     // 404
     default:
         http_response_code(404);

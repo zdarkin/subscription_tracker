@@ -1,8 +1,16 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    
-    # Forward all requests to the public/ directory, excluding scripts
-    RewriteCond %{REQUEST_URI} !^/public/
-    RewriteCond %{REQUEST_URI} !^/scripts/
-    RewriteRule ^(.*)$ public/$1 [L]
-</IfModule>
+Options -Indexes
+RewriteEngine On
+RewriteBase /
+
+# Protect .env file
+<Files ".env">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# If not in public directory, redirect there
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond %{REQUEST_URI} !^/scripts/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/$1 [L]
