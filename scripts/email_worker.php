@@ -21,6 +21,27 @@ require_once $projectRoot . '/config/env.php';
 require_once $projectRoot . '/config/config.php';
 require_once $projectRoot . '/models/Subscription.php';
 
+// Enable error reporting to diagnose Web/CGI issues
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Web Execution Token Security
+$isCli = (php_sapi_name() === 'cli');
+if (!$isCli) {
+  header('Content-Type: text/plain; charset=utf-8');
+  $urlToken    = $_GET['token'] ?? '';
+  $secureToken = $_ENV['WORKER_TOKEN'] ?? '';
+  
+  if (empty($secureToken) || $urlToken !== $secureToken) {
+    http_response_code(403);
+    die("Forbidden: Invalid or missing token.\n");
+  }
+}
+
+// Mark this cron run as completed for today immediately to avoid double execution
+file_put_contents($projectRoot . '/cron_last_run.txt', date('Y-m-d'));
+
 // PHPMailer (installed via Composer)
 $vendorAutoload = $projectRoot . '/vendor/autoload.php';
 if (!file_exists($vendorAutoload)) {
@@ -61,79 +82,131 @@ foreach ($daysBeforeList as $daysAhead) {
   echo "[$timestamp] [Milestone: {$daysAhead} days] Found " . count($dueItems) . " subscription(s) due for alert:\n";
 
   foreach ($dueItems as $item) {
-    $mail = new PHPMailer(true);
+    // Dynamically calculate actual remaining days
+    $today = new DateTime(date('Y-m-d'));
+    $renewal = new DateTime($item['renewal_date']);
+    $diff = $today->diff($renewal);
+    $daysRemaining = (int) $diff->format('%r%a');
 
-    try {
-      // SMTP Configuration
-      $mail->isSMTP();
-      $mail->Host        = $mailCfg['host'];
-      
-      // Enable SMTP authentication only if username is provided
-      $mail->SMTPAuth    = !empty($mailCfg['username']);
-      if ($mail->SMTPAuth) {
-        $mail->Username    = $mailCfg['username'];
-        $mail->Password    = $mailCfg['password'];
+    if ($daysRemaining === 1) {
+      $daysText = 'tomorrow';
+      $subjectText = 'tomorrow';
+    } elseif ($daysRemaining === 0) {
+      $daysText = 'today';
+      $subjectText = 'today';
+    } else {
+      $daysText = "in {$daysRemaining} days";
+      $subjectText = "in {$daysRemaining} days";
+    }
+
+    $serviceName  = htmlspecialchars($item['service_name'], ENT_QUOTES);
+    $renewalDate  = date('l, F j, Y', strtotime($item['renewal_date']));
+    $cost         = '₱' . number_format((float) $item['cost'], 2);
+    $cycle        = ucfirst($item['billing_cycle']);
+    $userName     = htmlspecialchars($item['username'], ENT_QUOTES);
+    $appName      = $config['app']['name'];
+    $appUrl       = $config['app']['url'];
+
+    $subject      = "Renewal Reminder: {$serviceName} renews " . ($daysRemaining === 0 ? "today" : $subjectText);
+    $htmlBody     = buildEmailHtml($userName, $serviceName, $renewalDate, $cost, $cycle, $daysText, $appName, $appUrl);
+    $textBody     = buildEmailText($userName, $serviceName, $renewalDate, $cost, $cycle, $daysText, $appName);
+
+    if ($mailCfg['mailer'] === 'resend') {
+      // Send via Resend HTTP API
+      try {
+        $apiKey = $mailCfg['resend_key'];
+        if (empty($apiKey)) {
+          throw new Exception("Missing RESEND_API_KEY in environment configuration.");
+        }
+
+        $url = 'https://api.resend.com/emails';
+        $postData = [
+          'from'    => "{$mailCfg['from_name']} <{$mailCfg['from_address']}>",
+          'to'      => [$item['user_email']],
+          'subject' => $subject,
+          'html'    => $htmlBody,
+          'text'    => $textBody
+        ];
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+          'Authorization: Bearer ' . $apiKey,
+          'Content-Type: application/json'
+        ]);
+
+        $response  = curl_exec($ch);
+        $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($curlError) {
+          throw new Exception("CURL Error: " . $curlError);
+        }
+
+        if ($httpCode >= 400) {
+          throw new Exception("Resend API returned status code {$httpCode}: " . $response);
+        }
+
+        // Log successful send
+        $subModel->logAlert((int) $item['id'], (int) $item['user_id'], $item['renewal_date'], $daysAhead);
+
+        echo " Sent to {$item['user_email']} via Resend for [{$item['service_name']}] (ID: {$item['id']})\n";
+        $totalSent++;
+      } catch (Exception $e) {
+        echo " Failed for {$item['user_email']} via Resend [{$item['service_name']}]: " . $e->getMessage() . "\n";
+        error_log("[EmailWorker] Resend Failed: " . $e->getMessage());
+        $totalFailed++;
       }
-      
-      // Determine encryption setting dynamically
-      $encryption = strtolower($mailCfg['encryption'] ?? '');
-      if ($encryption === 'tls') {
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-      } elseif ($encryption === 'ssl') {
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-      } else {
-        $mail->SMTPSecure = '';
-        $mail->SMTPAutoTLS = false; // Prevent PHPMailer from upgrading to TLS on unencrypted local ports
+    } else {
+      // Send via PHPMailer SMTP
+      $mail = new PHPMailer(true);
+
+      try {
+        $mail->isSMTP();
+        $mail->Host        = $mailCfg['host'];
+        
+        $mail->SMTPAuth    = !empty($mailCfg['username']);
+        if ($mail->SMTPAuth) {
+          $mail->Username    = $mailCfg['username'];
+          $mail->Password    = $mailCfg['password'];
+        }
+        
+        $encryption = strtolower($mailCfg['encryption'] ?? '');
+        if ($encryption === 'tls') {
+          $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        } elseif ($encryption === 'ssl') {
+          $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        } else {
+          $mail->SMTPSecure = '';
+          $mail->SMTPAutoTLS = false;
+        }
+        
+        $mail->Port        = $mailCfg['port'];
+
+        // Recipients
+        $mail->setFrom($mailCfg['from_address'], $mailCfg['from_name']);
+        $mail->addAddress($item['user_email'], $item['username']);
+
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body    = $htmlBody;
+        $mail->AltBody = $textBody;
+
+        $mail->send();
+
+        // Log successful send
+        $subModel->logAlert((int) $item['id'], (int) $item['user_id'], $item['renewal_date'], $daysAhead);
+
+        echo " Sent to {$item['user_email']} via SMTP for [{$item['service_name']}] (ID: {$item['id']})\n";
+        $totalSent++;
+      } catch (MailerException $e) {
+        echo " Failed for {$item['user_email']} via SMTP [{$item['service_name']}]: " . $mail->ErrorInfo . "\n";
+        error_log("[EmailWorker] SMTP Failed: " . $mail->ErrorInfo);
+        $totalFailed++;
       }
-      
-      $mail->Port        = $mailCfg['port'];
-
-      // Recipients
-      $mail->setFrom($mailCfg['from_address'], $mailCfg['from_name']);
-      $mail->addAddress($item['user_email'], $item['username']);
-
-      // Dynamically calculate actual remaining days
-      $today = new DateTime(date('Y-m-d'));
-      $renewal = new DateTime($item['renewal_date']);
-      $diff = $today->diff($renewal);
-      $daysRemaining = (int) $diff->format('%r%a');
-
-      if ($daysRemaining === 1) {
-        $daysText = 'tomorrow';
-        $subjectText = 'tomorrow';
-      } elseif ($daysRemaining === 0) {
-        $daysText = 'today';
-        $subjectText = 'today';
-      } else {
-        $daysText = "in {$daysRemaining} days";
-        $subjectText = "in {$daysRemaining} days";
-      }
-
-      // Build email body
-      $serviceName  = htmlspecialchars($item['service_name'], ENT_QUOTES);
-      $renewalDate  = date('l, F j, Y', strtotime($item['renewal_date']));
-      $cost         = '₱' . number_format((float) $item['cost'], 2);
-      $cycle        = ucfirst($item['billing_cycle']);
-      $userName     = htmlspecialchars($item['username'], ENT_QUOTES);
-      $appName      = $config['app']['name'];
-      $appUrl       = $config['app']['url'];
-
-      $mail->isHTML(true);
-      $mail->Subject = "Renewal Reminder: {$serviceName} renews " . ($daysRemaining === 0 ? "today" : $subjectText);
-      $mail->Body    = buildEmailHtml($userName, $serviceName, $renewalDate, $cost, $cycle, $daysText, $appName, $appUrl);
-      $mail->AltBody = buildEmailText($userName, $serviceName, $renewalDate, $cost, $cycle, $daysText, $appName);
-
-      $mail->send();
-
-      // Log successful send to prevent duplicate alerts for this milestone
-      $subModel->logAlert((int) $item['id'], (int) $item['user_id'], $item['renewal_date'], $daysAhead);
-
-      echo " Sent to {$item['user_email']} for [{$item['service_name']}] (ID: {$item['id']})\n";
-      $totalSent++;
-    } catch (MailerException $e) {
-      echo " Failed for {$item['user_email']} [{$item['service_name']}]: " . $mail->ErrorInfo . "\n";
-      error_log("[EmailWorker] Failed: " . $mail->ErrorInfo);
-      $totalFailed++;
     }
   }
   echo "\n";
@@ -141,7 +214,10 @@ foreach ($daysBeforeList as $daysAhead) {
 
 $finish = date('Y-m-d H:i:s');
 echo "[$finish] Worker Finished. Sent: {$totalSent} | Failed: {$totalFailed}\n";
-exit($totalFailed > 0 ? 1 : 0);
+if ($isCli) {
+    exit($totalFailed > 0 ? 1 : 0);
+}
+exit;
 
 
 // ------------------------------------------------------------------
