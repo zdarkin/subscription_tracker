@@ -1,7 +1,8 @@
 <?php
+
 /**
  * AdminController
- * Handles user management and managing subscriptions on behalf of users.
+ * Handles user management and managing subscriptions.
  */
 
 require_once dirname(__DIR__) . '/models/User.php';

@@ -8,11 +8,6 @@
  * Example Windows Task Scheduler action:
  *   Program: C:\laragon\bin\php\php8.x\php.exe
  *   Arguments: "C:\laragon\www\subscription-tracker\scripts\email_worker.php"
- *
- * Example Unix cron (Laragon bash/WSL):
- *   0 7 * * * /usr/bin/php /path/to/subscription-tracker/scripts/email_worker.php >> /path/to/logs/email_worker.log 2>&1
- *
- * -------------------------------------------------------
  */
 
 $projectRoot = dirname(__DIR__);
@@ -42,7 +37,7 @@ if (!$isCli) {
 // Mark this cron run as completed for today immediately to avoid double execution
 file_put_contents($projectRoot . '/cron_last_run.txt', date('Y-m-d'));
 
-// PHPMailer (installed via Composer)
+// PHPMailer
 $vendorAutoload = $projectRoot . '/vendor/autoload.php';
 if (!file_exists($vendorAutoload)) {
   die("[ERROR] PHPMailer not installed. Run: composer install\n");

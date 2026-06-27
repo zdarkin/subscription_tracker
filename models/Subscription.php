@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Subscription Model
  * Handles all database interactions for the subscriptions table.
@@ -19,12 +20,26 @@ class Subscription
     ];
 
     public const CATEGORIES = [
-        'Software', 'Entertainment', 'Cloud Storage', 'Productivity',
-        'Security', 'Communication', 'Finance', 'Health', 'Education', 'Other',
+        'Software',
+        'Entertainment',
+        'Cloud Storage',
+        'Productivity',
+        'Security',
+        'Communication',
+        'Finance',
+        'Health',
+        'Education',
+        'Other',
     ];
 
     public const PAYMENT_METHODS = [
-        'Credit Card', 'Debit Card', 'PayPal', 'GCash', 'Maya', 'Bank Transfer', 'Crypto', 'Other',
+        'Credit Card',
+        'Debit Card',
+        'PayPal',
+        'GCash',
+        'Maya',
+        'Bank Transfer',
+        'Other',
     ];
 
     public function __construct()
@@ -58,25 +73,25 @@ class Subscription
             $year = (int)$start->format('Y');
             $month = (int)$start->format('n');
             $day = (int)$start->format('j');
-            
+
             $month += $cycles * $monthsToAdd;
-            
+
             // Normalize month and year
             $year += (int)floor(($month - 1) / 12);
             $month = (($month - 1) % 12) + 1;
-            
+
             // Get the number of days in the target month
             $daysInTargetMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-            
+
             // Cap the day to the last day of the target month
             $targetDay = min($day, $daysInTargetMonth);
-            
+
             $targetDate = new DateTime(sprintf('%04d-%02d-%02d', $year, $month, $targetDay));
-            
+
             if ($targetDate >= $now) {
                 return $targetDate->format('Y-m-d');
             }
-            
+
             $cycles++;
         }
     }
@@ -224,14 +239,14 @@ class Subscription
         foreach ($rows as $row) {
             $next = self::calculateNextRenewal($row['start_date'], $row['billing_cycle']);
             $nextDate = new DateTime($next);
-            
+
             if ($nextDate >= $today && $nextDate <= $limitDate) {
                 $row['next_renewal_date'] = $next;
                 $upcoming[] = $row;
             }
         }
 
-        usort($upcoming, function($a, $b) {
+        usort($upcoming, function ($a, $b) {
             return strtotime($a['next_renewal_date']) <=> strtotime($b['next_renewal_date']);
         });
 

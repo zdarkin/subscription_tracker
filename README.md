@@ -45,9 +45,9 @@ Clone the repository into your web server's document root (e.g., `C:\laragon\www
 ### 2. Database Configuration
 1. Open your database manager (e.g., phpMyAdmin, HeidiSQL, or TablePlus).
 2. Create a new database named `subscription_tracker` (or let the schema file do it).
-3. Import the schema file located at `sql/schema.sql`.
-4. *(Optional)* Import `sql/test_data.sql` to populate the database with sample users and subscriptions.
-   > **Note:** The default admin account (if using test data) is `john.admin@example.com` / `password123`.
+3. Import the database schema file located at `sql/create_db.sql`.
+4. *(Optional)* Import `sql/mock_data.sql` to populate the database with sample users and subscriptions.
+   > **Note:** The default admin account (if using mock data) is `admin@example.com` / `admin123`. Regular user accounts (e.g., `alice@example.com`, `bob@example.com`) have the password `password123`.
 
 ### 3. Environment Configuration
 1. Copy the example environment file:
