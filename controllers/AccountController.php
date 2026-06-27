@@ -55,12 +55,21 @@ class AccountController
             exit;
         }
 
-        $userId   = (int) Session::get('user_id');
-        $username = trim($_POST['username'] ?? '');
-        $email    = trim($_POST['email'] ?? '');
-        $errors   = [];
+        $userId    = (int) Session::get('user_id');
+        $username  = trim($_POST['username'] ?? '');
+        $full_name = trim($_POST['full_name'] ?? '');
+        $email     = trim($_POST['email'] ?? '');
+        $errors    = [];
 
         // Validation
+        if (empty($full_name) || strlen($full_name) < 2) {
+            $errors[] = 'Full name must be at least 2 characters.';
+        }
+
+        if (!preg_match('/^[a-zA-Z\s]+$/', $full_name)) {
+            $errors[] = 'Full name may only contain letters and spaces.';
+        }
+
         if (empty($username) || strlen($username) < 3) {
             $errors[] = 'Username must be at least 3 characters.';
         }
@@ -89,13 +98,14 @@ class AccountController
             exit;
         }
 
-        $ok = $this->userModel->updateProfile($userId, $username, $email);
+        $ok = $this->userModel->updateProfile($userId, $username, $full_name, $email);
 
         if (!$ok) {
             Session::flash('error_profile', 'Failed to update profile. Please try again.');
         } else {
             // Update session data
             Session::set('user_username', $username);
+            Session::set('user_full_name', $full_name);
             Session::set('user_email', $email);
             Session::flash('success_profile', 'Profile updated successfully!');
         }

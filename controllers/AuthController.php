@@ -59,6 +59,7 @@ class AuthController
 
         Session::set('user_id',       $user['id']);
         Session::set('user_username', $user['username']);
+        Session::set('user_full_name',$user['full_name']);
         Session::set('user_email',    $user['email']);
         Session::set('user_role',     $user['role']);
 
@@ -92,12 +93,21 @@ class AuthController
         }
 
         $username  = trim($_POST['username']  ?? '');
+        $full_name = trim($_POST['full_name'] ?? '');
         $email     = trim($_POST['email']     ?? '');
         $password  = $_POST['password']       ?? '';
         $confirm   = $_POST['confirm']        ?? '';
         $errors    = [];
 
         // --- Validation ---
+        if (empty($full_name) || strlen($full_name) < 2) {
+            $errors[] = 'Full name must be at least 2 characters.';
+        }
+
+        if (!preg_match('/^[a-zA-Z\s]+$/', $full_name)) {
+            $errors[] = 'Full name may only contain letters and spaces.';
+        }
+
         if (empty($username) || strlen($username) < 3) {
             $errors[] = 'Username must be at least 3 characters.';
         }
@@ -138,12 +148,12 @@ class AuthController
 
         if (!empty($errors)) {
             Session::flash('error',  implode('|', $errors));
-            Session::flash('old',    ['username' => $username, 'email' => $email]);
+            Session::flash('old',    ['username' => $username, 'full_name' => $full_name, 'email' => $email]);
             header('Location: /register');
             exit;
         }
 
-        $userId = $this->userModel->create($username, $email, $password);
+        $userId = $this->userModel->create($username, $full_name, $email, $password);
 
         if (!$userId) {
             Session::flash('error', 'Registration failed. Please try again.');

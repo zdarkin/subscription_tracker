@@ -21,7 +21,7 @@ class User
 
     public function findById(int $id): array|false
     {
-        $stmt = $this->db->prepare('SELECT id, username, email, role, created_at FROM users WHERE id = ?');
+        $stmt = $this->db->prepare('SELECT id, username, full_name, email, role, created_at FROM users WHERE id = ?');
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
@@ -55,16 +55,16 @@ class User
      * Register a new user.
      * @return int|false  New user ID or false on failure.
      */
-    public function create(string $username, string $email, string $plainPassword): int|false
+    public function create(string $username, string $full_name, string $email, string $plainPassword): int|false
     {
         $hash = password_hash($plainPassword, PASSWORD_BCRYPT, ['cost' => 12]);
 
         $stmt = $this->db->prepare(
-            'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)'
+            'INSERT INTO users (username, full_name, email, password, role) VALUES (?, ?, ?, ?, ?)'
         );
 
         try {
-            $stmt->execute([$username, $email, $hash, 'user']);
+            $stmt->execute([$username, $full_name, $email, $hash, 'user']);
             return (int) $this->db->lastInsertId();
         } catch (PDOException $e) {
             error_log('[User::create] ' . $e->getMessage());
@@ -107,10 +107,10 @@ class User
     /**
      * Update profile details.
      */
-    public function updateProfile(int $id, string $username, string $email): bool
+    public function updateProfile(int $id, string $username, string $full_name, string $email): bool
     {
-        $stmt = $this->db->prepare('UPDATE users SET username = ?, email = ? WHERE id = ?');
-        return $stmt->execute([$username, $email, $id]);
+        $stmt = $this->db->prepare('UPDATE users SET username = ?, full_name = ?, email = ? WHERE id = ?');
+        return $stmt->execute([$username, $full_name, $email, $id]);
     }
 
     // ------------------------------------------------------------------
@@ -152,7 +152,7 @@ class User
     public function getAll(): array
     {
         $stmt = $this->db->prepare(
-            'SELECT u.id, u.username, u.email, u.role, u.created_at, COUNT(s.id) AS subscription_count
+            'SELECT u.id, u.username, u.full_name, u.email, u.role, u.created_at, COUNT(s.id) AS subscription_count
              FROM users u
              LEFT JOIN subscriptions s ON u.id = s.user_id
              GROUP BY u.id
@@ -172,7 +172,7 @@ class User
     public function getRecentUsers(int $limit = 5): array
     {
         $stmt = $this->db->prepare(
-            'SELECT u.id, u.username, u.email, u.role, u.created_at, COUNT(s.id) AS subscription_count
+            'SELECT u.id, u.username, u.full_name, u.email, u.role, u.created_at, COUNT(s.id) AS subscription_count
              FROM users u
              LEFT JOIN subscriptions s ON u.id = s.user_id
              GROUP BY u.id
@@ -188,14 +188,14 @@ class User
     {
         $term = '%' . $query . '%';
         $stmt = $this->db->prepare(
-            'SELECT u.id, u.username, u.email, u.role, u.created_at, COUNT(s.id) AS subscription_count
+            'SELECT u.id, u.username, u.full_name, u.email, u.role, u.created_at, COUNT(s.id) AS subscription_count
              FROM users u
              LEFT JOIN subscriptions s ON u.id = s.user_id
-             WHERE u.username LIKE ? OR u.email LIKE ?
+             WHERE u.username LIKE ? OR u.full_name LIKE ? OR u.email LIKE ?
              GROUP BY u.id
              ORDER BY u.created_at DESC'
         );
-        $stmt->execute([$term, $term]);
+        $stmt->execute([$term, $term, $term]);
         return $stmt->fetchAll();
     }
 
@@ -208,7 +208,7 @@ class User
     public function getUserWithStats(int $id): array|false
     {
         $stmt = $this->db->prepare(
-            'SELECT u.id, u.username, u.email, u.role, u.created_at, COUNT(s.id) AS subscription_count
+            'SELECT u.id, u.username, u.full_name, u.email, u.role, u.created_at, COUNT(s.id) AS subscription_count
              FROM users u
              LEFT JOIN subscriptions s ON u.id = s.user_id
              WHERE u.id = ?
@@ -218,14 +218,14 @@ class User
         return $stmt->fetch();
     }
 
-    public function createOnBehalf(string $username, string $email, string $plainPassword, string $role): int|false
+    public function createOnBehalf(string $username, string $full_name, string $email, string $plainPassword, string $role): int|false
     {
         $hash = password_hash($plainPassword, PASSWORD_BCRYPT, ['cost' => 12]);
         $stmt = $this->db->prepare(
-            'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)'
+            'INSERT INTO users (username, full_name, email, password, role) VALUES (?, ?, ?, ?, ?)'
         );
         try {
-            $stmt->execute([$username, $email, $hash, $role]);
+            $stmt->execute([$username, $full_name, $email, $hash, $role]);
             return (int) $this->db->lastInsertId();
         } catch (PDOException $e) {
             error_log('[User::createOnBehalf] ' . $e->getMessage());
@@ -233,15 +233,15 @@ class User
         }
     }
 
-    public function updateUserOnBehalf(int $id, string $username, string $email, string $role, ?string $plainPassword = null): bool
+    public function updateUserOnBehalf(int $id, string $username, string $full_name, string $email, string $role, ?string $plainPassword = null): bool
     {
         if (!empty($plainPassword)) {
             $hash = password_hash($plainPassword, PASSWORD_BCRYPT, ['cost' => 12]);
-            $stmt = $this->db->prepare('UPDATE users SET username = ?, email = ?, role = ?, password = ? WHERE id = ?');
-            return $stmt->execute([$username, $email, $role, $hash, $id]);
+            $stmt = $this->db->prepare('UPDATE users SET username = ?, full_name = ?, email = ?, role = ?, password = ? WHERE id = ?');
+            return $stmt->execute([$username, $full_name, $email, $role, $hash, $id]);
         } else {
-            $stmt = $this->db->prepare('UPDATE users SET username = ?, email = ?, role = ? WHERE id = ?');
-            return $stmt->execute([$username, $email, $role, $id]);
+            $stmt = $this->db->prepare('UPDATE users SET username = ?, full_name = ?, email = ?, role = ? WHERE id = ?');
+            return $stmt->execute([$username, $full_name, $email, $role, $id]);
         }
     }
 }

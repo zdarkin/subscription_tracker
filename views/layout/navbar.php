@@ -6,6 +6,7 @@
  */
 require_once dirname(__DIR__, 2) . '/controllers/Session.php';
 $currentUsername = Session::get('user_username', 'User');
+$currentFullName = Session::get('user_full_name') ?: $currentUsername;
 $currentRole     = Session::get('user_role', 'user');
 $currentPath     = strtok($_SERVER['REQUEST_URI'], '?');
 ?>
@@ -58,9 +59,9 @@ $currentPath     = strtok($_SERVER['REQUEST_URI'], '?');
             <div class="relative group">
                 <button id="userMenuBtn" class="flex items-center gap-2 px-3 py-2 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200">
                     <div class="w-8 h-8 rounded-full bg-gradient-brand flex items-center justify-center text-sm font-bold text-white">
-                        <?= htmlspecialchars(strtoupper(substr($currentUsername, 0, 1)), ENT_QUOTES) ?>
+                        <?= htmlspecialchars(strtoupper(substr($currentFullName, 0, 1)), ENT_QUOTES) ?>
                     </div>
-                    <span class="hidden sm:block text-sm font-medium"><?= htmlspecialchars($currentUsername, ENT_QUOTES) ?></span>
+                    <span class="hidden sm:block text-sm font-medium"><?= htmlspecialchars($currentFullName, ENT_QUOTES) ?></span>
                     <svg class="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
@@ -69,7 +70,7 @@ $currentPath     = strtok($_SERVER['REQUEST_URI'], '?');
                 <div id="userMenu" class="hidden absolute right-0 mt-2 w-48 py-2 bg-surface-700 border border-white/10 rounded-xl shadow-card animate-fade-in z-50">
                     <div class="px-4 py-2 border-b border-white/5">
                         <p class="text-xs text-gray-500">Signed in as</p>
-                        <p class="text-sm font-medium text-white truncate"><?= htmlspecialchars($currentUsername, ENT_QUOTES) ?></p>
+                        <p class="text-sm font-medium text-white truncate"><?= htmlspecialchars($currentFullName, ENT_QUOTES) ?></p>
                     </div>
 
                     <!-- Navigation Links (Mobile only) -->

@@ -125,17 +125,17 @@ $loggedInAdminId = (int) \Session::get('user_id');
                         <tbody class="divide-y divide-white/5 text-sm">
                             <?php foreach ($users as $u): ?>
                                 <tr class="hover:bg-white/[0.01] transition-colors duration-150"
-                                    data-name="<?= htmlspecialchars($u['username'], ENT_QUOTES) ?>"
+                                    data-name="<?= htmlspecialchars($u['full_name'], ENT_QUOTES) ?>"
                                     data-role="<?= htmlspecialchars($u['role'], ENT_QUOTES) ?>"
                                     data-date="<?= htmlspecialchars($u['created_at'], ENT_QUOTES) ?>"
                                     data-subs="<?= (int)$u['subscription_count'] ?>">
                                     <td class="py-3.5 pr-4 flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full bg-gradient-brand flex items-center justify-center text-xs font-bold text-white">
-                                            <?= htmlspecialchars(strtoupper(substr($u['username'], 0, 1)), ENT_QUOTES) ?>
+                                            <?= htmlspecialchars(strtoupper(substr($u['full_name'], 0, 1)), ENT_QUOTES) ?>
                                         </div>
                                         <div class="min-w-0">
-                                            <p class="font-medium text-white truncate"><?= htmlspecialchars($u['username'], ENT_QUOTES) ?></p>
-                                            <p class="text-xs text-gray-500 truncate"><?= htmlspecialchars($u['email'], ENT_QUOTES) ?></p>
+                                            <p class="font-medium text-white truncate"><?= htmlspecialchars($u['full_name'], ENT_QUOTES) ?></p>
+                                            <p class="text-xs text-gray-500 truncate">@<?= htmlspecialchars($u['username'], ENT_QUOTES) ?> · <?= htmlspecialchars($u['email'], ENT_QUOTES) ?></p>
                                         </div>
                                     </td>
                                     <td class="py-3.5 px-4">
