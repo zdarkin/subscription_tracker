@@ -1,6 +1,7 @@
 .env
 /certs/
 /vendor/
+cron_last_run.txt
 *.log
 .idea/
 .vscode/

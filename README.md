@@ -92,17 +92,6 @@ You can run this script manually in your terminal to test email delivery:
 php scripts/email_worker.php
 ```
 
----
-
-## 🛡️ Security Details
-The codebase has been thoroughly audited for deployment readiness:
-- **XSS Prevention**: All user-generated content is escaped using `htmlspecialchars(..., ENT_QUOTES)`.
-- **SQLi Prevention**: 100% reliance on parameterized PDO queries; no string interpolation in SQL statements.
-- **Session Security**: Enforces `SameSite=Lax` and `HttpOnly` flags on session cookies. Includes automatic inactivity timeouts and session ID regeneration.
-- **Credential Safety**: `.env` files and IDE directories are strictly ignored in `.gitignore`. Hardcoded credentials have been completely removed.
-
----
-
 ## 👨‍💻 Usage
 1. Register a new user account or log in with an existing one.
 2. Navigate to **Add Subscription** to track a new recurring cost.
